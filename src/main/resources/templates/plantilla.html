@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo}"></title>
+
+    <link rel="icon" type="image/png" th:href="@{/img/clubfit-removebg-preview.png}">
+
+</head>
+
+<body>
+    <!-- Esta va a ser la parte que se debe reeemplazar en las demas páginas, el contenido -->
+    <div layout:fragment="contenido">
+        ...
+    </div>
+
+    <!-- Mis JS -->
+    <script th:fragment="js"></script>
+</body>
+
+</html>

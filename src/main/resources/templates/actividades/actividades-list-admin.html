@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo}"></title>
+
+    <link rel="icon" type="image/png" th:href="@{/img/clubfit-removebg-preview.png}">
+    <link rel="stylesheet" href="/css/datatable-list.css">
+
+</head>
+
+<body>
+    <!-- Esta va a ser la parte que se debe reeemplazar en las demas páginas, el contenido -->
+    <div layout:fragment="contenido">
+        <div class="list-container">
+            <h2>LISTADO DE ACTIVIDADES</h2>
+
+            <a th:href="@{/actividades/nuevo}" class="boton-nuevo">+ NUEVA ACTIVIDAD</a>
+
+            <div class="table-wrapper">
+                <table id="actividadTable" class="display table-dark table-striped" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>MONTO</th>
+                            <th>Cantidad de Alumnos</th>
+                            <!-- <th>Actividad</th>
+                            <th>Fecha Alta</th>
+                            <th>Vencimiento</th>
+                            <th>Saldo</th>
+                            <th>Cuota</th> -->
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="act : ${actividad}"> <!-- Esta parte hace que cuando elimines -->
+                            <td th:text="${act.id}"></td> <!-- un socio el id se reinicie -->
+                            <td th:text="${act.nombre}"></td>
+                            <td th:text="${act.monto}"></td>
+                            <td th:text="${#lists.size(act.socios)}"></td>
+                            <td>
+                                <a th:href="@{/actividades/editar/{id}(id=${act.id})}"
+                                    class="editar text-warning me-2 p-2 bg-dark rounded-3">Editar</a>
+                                <a sec:authorize="${hasRole('ADMIN')}" href="#" class="eliminar text-danger p-2 bg-dark rounded-3"
+                                    th:onclick="confirmarEliminacion('/actividades/eliminar/' + [[${act.id}]])">
+                                    Eliminar
+                                </a>
+                            </td>
+                            <!-- <td th:text="${socio.actividad}"></td>
+                            <td th:text="${#temporals.format(socio.fechaAlta, 'dd/MM/yyyy')}"></td>
+                            <td th:text="${#temporals.format(socio.fechaVencimiento, 'dd/MM/yyyy')}"></td>
+                            <td th:text="${socio.saldoPendiente != null ? ('$' + socio.saldoPendiente) : '-'}"></td>
+                            <td>
+                                <span th:if="${socio.cuotaPaga != null}"
+                                    th:class="${socio.cuotaPaga} ? 'estado-pagado' : 'estado-pendiente'"
+                                    th:text="${socio.cuotaPaga} ? 'PAGADA' : 'PENDIENTE'">
+                                    PAGADA 
+                                </span>
+                                <span th:if="${socio.cuotaPaga == null}">-</span>
+                            </td> -->
+                            <!-- <td class="acciones">
+                                <a th:href="@{/actividades/editar/{id}(id=${socio.id})}"
+                                    class="editar text-warning me-2">Editar</a>
+                                <a href="#" class="eliminar text-danger"
+                                    th:onclick="'confirmarEliminacion(' + ${socio.id} + ');'">
+                                    Eliminar
+                                </a>
+                            </td> -->
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mis JS -->
+    <script th:fragment="js" th:src="@{/js/actividades-list.js}"></script>
+</body>
+
+</html>

@@ -1,0 +1,256 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+  color: rgb(255, 255, 255);
+}
+
+body {
+  background-color: #111;
+  color: #fff;
+  background: #0026ff;
+  background: linear-gradient(217deg, rgba(0, 38, 255, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(255, 0, 221, 1) 100%);
+}
+
+.containerr {
+  display: flex;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-y: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background-color: #000;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-between; */
+  border-right: 2px solid #e101ff;
+  align-content: center;
+}
+
+.logo {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.logo img {
+  width: 120px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0 1rem;
+}
+
+.sidebar ul li {
+  padding: 0.7rem 0;
+  cursor: pointer;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+}
+
+.sidebar ul li a:visited {
+  color: inherit;
+}
+
+.sidebar ul li:hover {
+  color: #e60000;
+}
+
+/* Main content */
+.main {
+  flex-grow: 1;
+  padding: 20px;
+  width: 100%;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+header input {
+  background-color: #222;
+  border: 1px solid #444;
+  padding: 0.6rem;
+  border-radius: 5px;
+  color: #fff;
+  width: 240px;
+}
+
+.info-socio {
+  margin-top: 25px;
+  margin-top: 2rem;
+  /* width: 50%; */
+  /* margin: 0 auto; */
+}
+
+.alertas {
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+  /* column-gap: 10px; */
+  /* margin: 10px; */
+}
+
+.deuda,
+.horario {
+  background-color: #e60000;
+  color: #fff;
+  padding: 0.7rem;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 6px;
+  width: 50%;
+  /* gap: 10px; */
+}
+
+.deuda {
+  margin-right: 50px;
+}
+
+.tarjeta {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  background-color: #000000;
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.foto-socio {
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-right: 1.5rem;
+}
+
+.datos p {
+  margin: 0.4rem 0;
+  font-size: x-large;
+}
+
+.estado {
+  margin-top: 1.5rem;
+  background-color: #e60000;
+  text-align: center;
+  padding: 1rem;
+  border-radius: 8px;
+  /* color: #000; */
+}
+
+.estado h3 {
+  color: #fff;
+  font-weight: bold;
+}
+
+.cuota-al-dia {
+  background-color: rgb(0, 255, 0);
+  color: #000 !important;
+}
+
+.cuota-vencida {
+  background-color: red;
+}
+
+/* Clase para aviso de vencimiento próximo (<= 5 días) */
+.cuota-proximo {
+  background-color: #ffeb3b;
+  /* amarillo claro */
+  color: #000 !important;
+  border-radius: 8px;
+  text-align: center;
+  padding: 1rem;
+}
+
+.dropdown-menu {
+    background-color: #343a40 !important;
+}
+.dropdown-item {
+    color: white !important;
+}
+.dropdown-item:hover {
+    background-color: #495057 !important;
+}
+
+/* ===============================
+   SWEETALERT2 – ESTILO NEON GYM
+================================ */
+
+/* FIX iconos */
+.swal2-icon,
+.swal2-icon * {
+  box-sizing: content-box !important;
+}
+
+/* Popup */
+.swal-neon {
+  border-radius: 18px !important;
+  border: 2px solid #ff005d !important;
+  box-shadow:
+    0 0 15px #ff005d,
+    0 0 30px rgba(255, 0, 93, 0.6),
+    0 0 60px rgba(255, 0, 93, 0.4) !important;
+}
+
+/* Título */
+.swal-title-neon {
+  color: #ff005d !important;
+  text-shadow:
+    0 0 5px #ff005d,
+    0 0 10px #ff005d,
+    0 0 20px rgba(255, 0, 93, 0.8);
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Botón confirmar */
+.swal-btn-confirm {
+  background: #ff005d !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  font-weight: bold !important;
+  padding: 10px 18px !important;
+  box-shadow:
+    0 0 10px #ff005d,
+    0 0 25px rgba(255, 0, 93, 0.8);
+}
+
+/* Botón cancelar */
+.swal-btn-cancel {
+  background: #00ff9c !important;
+  color: #000 !important;
+  border-radius: 10px !important;
+  font-weight: bold !important;
+  padding: 10px 18px !important;
+  box-shadow:
+    0 0 10px #00ff9c,
+    0 0 25px rgba(0, 255, 156, 0.8);
+}
+
+/* Hover animado */
+.swal-btn-confirm:hover,
+.swal-btn-cancel:hover {
+  transform: scale(1.08);
+  transition: 0.2s ease;
+}
+
+/* Icono */
+.swal2-icon.swal2-warning {
+  border-color: #ff005d !important;
+  color: #ff005d !important;
+  box-shadow:
+    0 0 10px #ff005d,
+    0 0 25px rgba(255, 0, 93, 0.8);
+}

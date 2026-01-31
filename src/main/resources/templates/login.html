@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+
+  <head>
+    
+  <script src="https://getbootstrap.com/docs/5.3/assets/js/color-modes.js"></script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.122.0">
+    <title> Iniciar Sesión </title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/sign-in/">
+
+    
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+
+    <!-- Mi estilo-->
+    <link rel="stylesheet" href="/css/sign-in.css">
+
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+<!--Icono del navegador-->
+<link rel="icon" type="image/png" th:href="@{/img/clubfit-removebg-preview.png}">
+<meta name="theme-color" content="#712cf9">
+
+<main class="form-signin w-100 m-auto container-fluid my-6">
+  <form th:action="@{/login}" method="post">
+    <!-- Logo central -->
+    <img src="/img/clubfit-removebg-preview.png" 
+     th:src="@{/img/clubfit-removebg-preview.png}" 
+     class="d-block mx-auto"
+     style="width: 140px;">
+    <h1 class="h3 mb-3 fw-normal ">Iniciar Sesión</h1>
+
+    <!-- Mensajes -->
+     <p th:if="${param.error}" class="text-danger text-center">Usuario o Contraseña Incorrectos</p>
+     <p th:if="${param.logout}" class="text-warning text-center">Sesión Cerrada</p>
+
+    <div class="form-floating">
+      <input name="username" type="username" class="form-control" id="floatingInput" placeholder="Usuario">
+      <label for="floatingInput">Usuario</label>
+    </div>
+    <div class="form-floating">
+      <input name="password" type="password" class="form-control" id="floatingPassword" placeholder="Contraseña">
+      <label for="floatingPassword">Contraseña</label>
+    </div>
+
+    <button class="btn btn-primary w-100 py-2" type="submit">Ingresar</button>
+    <p class="mt-5 mb-3 text-body-secondary">Sistema Gym ClubFitHouse&copy;analistas2025</p>
+  </form>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+    </body>
+
+</html>

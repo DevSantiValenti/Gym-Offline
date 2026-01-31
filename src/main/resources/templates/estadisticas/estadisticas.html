@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>Estadísticas</title>
+
+    <link rel="stylesheet" th:href="@{/css/estadisticas.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <div layout:fragment="contenido" class="list-container">
+
+        <h2>ESTADÍSTICAS ANUALES</h2>
+
+        <div class="estadisticas-resumen">
+            <div class="resumen-card mejor-mes">
+                <h5>Mejor mes del año</h5>
+                <p id="mejorMes">—</p>
+            </div>
+
+            <div class="resumen-card total-anual">
+                <h5>Total anual</h5>
+                <p id="totalAnual">$ 0</p>
+            </div>
+        </div>
+
+        <form method="get" class="row g-3 mb-4">
+            <div class="col-md-3">
+                <label>Año</label>
+                <select name="anio" class="form-select" onchange="this.form.submit()">
+                    <option th:each="a : ${anios}" th:value="${a}" th:text="${a}"
+                        th:selected="${a == anioSeleccionado}">
+                    </option>
+                </select>
+            </div>
+        </form>
+
+        <div class="table-wrapper">
+            <canvas id="barChart"></canvas>
+        </div>
+
+        <!-- Chart de las inscripciones en el año, por mes -->
+        <div class="table-wrapper" style="margin-top:24px;">
+            <canvas id="inscripcionesChart"></canvas>
+        </div>
+
+    </div>
+
+    <!-- ⚠️ TODO EL JS VA DENTRO DEL FRAGMENTO -->
+    <th:block th:fragment="js">
+
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            window.labels = /*[[${meses}]]*/[];
+            window.dataValues = /*[[${totales}]]*/[];
+            window.inscripciones = /*[[${inscripcionesCounts}]]*/[];
+            /*]]>*/
+        </script>
+
+        <script th:src="@{/js/estadisticas.js}"></script>
+
+    </th:block>
+
+</body>
+
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo}"></title>
+
+    <link rel="icon" type="image/png" th:href="@{/img/clubfit-removebg-preview.png}">
+    <link rel="stylesheet" href="/css/socios-form.css">
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <!-- Esta va a ser la parte que se debe reeemplazar en las demas páginas, el contenido -->
+    <div layout:fragment="contenido">
+        <div class="form-container">
+            <h2>DATOS DEL SOCIO</h2>
+
+            <form th:action="@{/socios/nuevo}" th:object="${socio}" method="POST" enctype="multipart/form-data">
+                <!-- Imprescindible para identificar si es un Socio nuevo o no -->
+                <input type="hidden" th:field="*{id}">
+
+                <!-- Primera fila -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombreCompleto" class="required">Nombre</label>
+                        <input type="text" th:field="*{nombreCompleto}" name="nombreCompleto"
+                            placeholder="Ingrese nombre completo" required maxlength="25" minlength="3">
+                    </div>
+                    <div class="form-group">
+                        <label for="dni" class="required">DNI/ID</label>
+                        <input type="text" id="dni" th:field="*{dni}" placeholder="Ej: 35000111" required maxlength="8"
+                            minlength="5">
+                    </div>
+                </div>
+
+                <!-- Segunda fila -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fechaNacimiento">Fecha de nacimiento</label>
+                        <input type="date" id="fechaNacimiento" th:field="*{fechaNacimiento}">
+                    </div>
+                    <div class="form-group">
+                        <label for="telefono">Teléfono</label>
+                        <div class="phone-group">
+                            <!-- <input type="text" id="codPais" name="codPais" placeholder="Cod. País" value="549"
+                                style="max-width: 80px;"> -->
+                            <input type="text" id="telefono" th:field="*{telefono}" placeholder="Número">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tercera fila -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="direccion">Domicilio</label>
+                        <input type="text" id="direccion" th:field="*{direccion}" placeholder="Calle y número">
+                    </div>
+                    <div class="form-group">
+                        <label for="profesion">Profesión / Actividad</label>
+                        <input type="text" id="profesion" th:field="*{profesion}" placeholder="Ej: Abogado">
+                    </div>
+                </div>
+
+                <!-- Cuarta fila -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <!-- <label for="email">Email</label> -->
+                        <!-- <input type="email" id="email" name="email" placeholder="correo@ejemplo.com"> -->
+                    </div>
+                </div>
+
+                <!-- Quinta fila -->
+                <!-- <div class="form-row">
+                    <div class="form-group">
+                        <label for="comoNosConocio">¿Cómo nos conoció?</label>
+                        <textarea id="comoNosConocio" name="comoNosConocio" rows="3"
+                            placeholder="Redes sociales, amigo, publicidad..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="observaciones">Observaciones</label>
+                        <textarea id="observaciones" name="observaciones" rows="3"
+                            placeholder="Notas adicionales..."></textarea>
+                    </div>
+                </div> -->
+
+                <!-- Botón -->
+                <button type="submit" class="btn-siguiente"
+                    th:text="${modo == 'editar'} ? 'GUARDAR CAMBIOS' : 'SIGUIENTE'">
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Mis JS -->
+    <script th:fragment="js"></script>
+</body>
+
+</html>

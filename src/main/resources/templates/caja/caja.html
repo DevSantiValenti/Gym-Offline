@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <link rel="stylesheet" href="/css/caja.css">
+    <title>Caja</title>
+</head>
+
+<body>
+
+    <div layout:fragment="contenido" class="list-container">
+
+        <h2>CAJA</h2>
+
+        <!-- FILTROS -->
+        <form method="get" class="row g-3 mb-4">
+            <div class="col-md-3">
+                <label>Desde</label>
+                <input type="date" name="desde" class="form-control">
+            </div>
+
+            <div class="col-md-3">
+                <label>Hasta</label>
+                <input type="date" name="hasta" class="form-control">
+            </div>
+
+            <div class="col-md-3">
+                <label>Tipo de movimiento</label>
+                <select name="tipo" class="form-select">
+                    <option value="">Todos</option>
+                    <option value="CUOTA">Pago de cuota</option>
+                    <option value="INSCRIPCION">Pago de inscripción</option>
+                </select>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label>Forma de pago</label>
+                <select name="formaPago" class="form-select">
+                    <option value="">Todo</option>
+                    <option value="EFECTIVO">Efectivo</option>
+                    <option value="TRANSFERENCIA">Transferencia</option>
+                </select>
+            </div>
+
+            <div class="col-md-12 text-end">
+                <button class="boton-nuevo mt-2">Mostrar</button>
+            </div>
+        </form>
+
+        <!-- TABLA -->
+        <div class="table-wrapper">
+            <table id="tablaCaja">
+                <thead>
+                    <tr>
+                        <th>Actividad</th>
+                        <th>Socio</th>
+                        <th>Detalle</th>
+                        <th>Fecha / Hora</th>
+                        <th>Forma de pago</th>
+                        <th>Monto</th>
+                        <th sec:authorize="${hasRole('ADMIN')}">Eliminar</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="m : ${movimientos}">
+                        <td th:text="${m.actividad}"></td>
+                        <td th:text="${m.socioNombreCompleto}"></td>
+                        <td th:text="${m.detalle}"></td>
+                        <td th:text="${#temporals.format(m.fechaHora, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td th:text="${m.formaPago}"></td>
+                        <td th:text="'$' + ${m.monto}"></td>
+                        <td class="acciones">
+                            <!-- <form th:action="@{/caja/eliminar/{id}(id=${m.id})}" method="post">
+                                <button type="submit" class="eliminar">Eliminar</button>
+                            </form> -->
+                            <a sec:authorize="${hasRole('ADMIN')}" href="#" class="eliminar text-danger p-2 bg-dark rounded-3"
+                                th:onclick="confirmarEliminacion('/caja/eliminar/' + [[${m.id}]])">
+                                Eliminar
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- TOTAL -->
+        <div class="text-end mt-4">
+            <h3>TOTAL: $<span th:text="${total}"></span></h3>
+        </div>
+
+    </div>
+
+    <!-- JS -->
+    <script th:fragment="js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#tablaCaja').DataTable();
+        });
+    </script>
+
+</body>
+
+</html>

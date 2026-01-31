@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <link rel="stylesheet" th:href="@{/css/error.css}">
+    <link rel="icon" type="image/png" th:href="@{/img/clubfit-removebg-preview.png}">
+</head>
+
+<body>
+<div class="error-container">
+    <img src="/img/clubfit-removebg-preview.png" alt="ClubFit">
+    <h1>⚠</h1>
+    <h2 class="text-danger">⛔ ACCESO DENEGADO</h2>
+    <p>No tenés permisos para acceder a esta sección.</p>
+
+    <a th:href="@{/home}">Volver al inicio</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${titulo}"></title>
+
+  <link rel="icon" type="image/png" th:href="@{/img/clubfit-removebg-preview.png}">
+  <style>
+    .btn-abonar {
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: #060604;
+      color: rgb(225, 255, 0);
+      font-weight: bold;
+      font-size: x-large;
+      border-radius: 10px;
+      text-align: center;
+      margin: auto;
+      display: block;
+      width: 140px;
+      text-decoration: none !important;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Esta va a ser la parte que se debe reeemplazar en las demas páginas, el contenido -->
+  <div layout:fragment="contenido">
+    <header>
+      <h2>CONTROL DE ACCESO</h2>
+      <input type="text" id="busqueda" placeholder="DNI" autofocus>
+    </header>
+
+    <section class="info-socio">
+      <div id="alertas" class="alertas">
+        <!-- Mensajes dinámicos -->
+      </div>
+
+      <div id="tarjeta" class="tarjeta" style="display:none;">
+        <img id="foto-socio" src="/img/perfil.jpg" alt="Foto socio" class="foto-socio">
+        <div id="datos-socio" class="datos">
+          <!-- Se llenará con JS -->
+        </div>
+      </div>
+
+      <div id="estado" class="estado" style="display:none;">
+        <!-- Mensaje de estado -->
+      </div>
+    </section>
+  </div>
+  <script th:fragment="js" th:src="@{/js/index.js}"></script>
+</body>
+
+</html>
