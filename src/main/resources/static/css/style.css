@@ -9,8 +9,14 @@
 body {
   background-color: #111;
   color: #fff;
-  background: #0026ff;
-  background: linear-gradient(217deg, rgba(0, 38, 255, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(255, 0, 221, 1) 100%);
+  background: linear-gradient(217deg,
+      #8b0000 0%,
+      /* rojo oscuro */
+      #0b0b0b 50%,
+      /* negro profundo */
+      #1f1f1f 100%
+      /* gris acero */
+    );
 }
 
 .containerr {
@@ -28,7 +34,7 @@ body {
   display: flex;
   flex-direction: column;
   /* justify-content: space-between; */
-  border-right: 2px solid #e101ff;
+  border-right: 2px solid #ff0101;
   align-content: center;
 }
 
