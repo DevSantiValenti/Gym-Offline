@@ -168,3 +168,98 @@ tr:hover {
 ::-webkit-scrollbar-thumb:hover {
     background: #777;
 }
+
+/* ===============================
+   MOBILE – CAJA
+================================ */
+
+@media (max-width: 768px) {
+
+    .table-wrapper {
+        overflow-x: hidden;
+    }
+
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+        display: block;
+        width: 100%;
+    }
+
+    thead {
+        display: none;
+        /* ocultamos encabezados */
+    }
+
+    tbody tr {
+        background: #1e1e1e;
+        border-radius: 12px;
+        margin-bottom: 14px;
+        padding: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, .4);
+    }
+
+    td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 6px;
+        border-bottom: 1px solid #333;
+        font-size: 13px;
+    }
+
+    td:last-child {
+        border-bottom: none;
+    }
+
+    td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #ff9900;
+        font-size: 12px;
+        padding-right: 10px;
+        text-transform: uppercase;
+    }
+
+    /* MONTO */
+    td[data-label="Monto"] {
+        font-weight: bold;
+        color: #00ff9c;
+    }
+
+    /* ACCIONES */
+    .acciones {
+        margin-top: 10px;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .acciones a {
+        width: 100%;
+        text-align: center;
+        font-size: 13px;
+        padding: 6px;
+    }
+
+    /* TOTAL */
+    .text-end h3 {
+        font-size: 18px;
+        text-align: center;
+    }
+
+    /* FILTROS */
+    form.row>div {
+        width: 100%;
+    }
+
+    form .text-end {
+        text-align: center !important;
+    }
+
+    .boton-nuevo {
+        width: 100%;
+    }
+}

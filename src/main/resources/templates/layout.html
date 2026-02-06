@@ -24,6 +24,10 @@
 
 <body>
     <div class="containerr">
+        <button class="mobile-menu-btn" id="menuToggle">
+            ☰ MENU
+        </button>
+        <div class="overlay" id="overlay"></div>
         <aside class="sidebar">
             <div class="logo">
                 <img src="/img/captain-gym.png" alt="captain-gym">
@@ -61,7 +65,8 @@
         <main class="main">
             <!-- Esta va a ser la parte que se debe reeemplazar en las demas páginas, el contenido -->
             <div layout:fragment="contenido">
-                ...
+
+
             </div>
         </main>
     </div>
@@ -80,6 +85,21 @@
 
     <!-- Mis JS -->
     <script th:src="@{/js/confirmacionEliminar.js}"></script>
+    <script>
+        const menuBtn = document.getElementById("menuToggle");
+        const sidebar = document.querySelector(".sidebar");
+        const overlay = document.getElementById("overlay");
+
+        menuBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+            overlay.classList.toggle("show");
+        });
+
+        overlay.addEventListener("click", () => {
+            sidebar.classList.remove("open");
+            overlay.classList.remove("show");
+        });
+    </script>
 
     <script th:replace="~{:: js}"></script>
     <!-- Esto hace, que en otras paginas se herede estos JS, ademas de agregar el nuestro para esa pag -->

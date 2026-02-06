@@ -181,13 +181,15 @@ header input {
 }
 
 .dropdown-menu {
-    background-color: #343a40 !important;
+  background-color: #343a40 !important;
 }
+
 .dropdown-item {
-    color: white !important;
+  color: white !important;
 }
+
 .dropdown-item:hover {
-    background-color: #495057 !important;
+  background-color: #495057 !important;
 }
 
 /* ===============================
@@ -259,4 +261,72 @@ header input {
   box-shadow:
     0 0 10px #ff005d,
     0 0 25px rgba(255, 0, 93, 0.8);
+}
+
+
+
+/* Responsive */
+/* ===============================
+   RESPONSIVE – SIDEBAR
+================================ */
+
+/* ===============================
+   MOBILE SIDEBAR
+================================ */
+
+.mobile-menu-btn {
+  display: none;
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 1101;
+  background: #000;
+  color: #fff;
+  border: 2px solid #ff0101;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 20px;
+}
+
+/* Overlay oscuro */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1100;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -240px;
+    height: 100vh;
+    width: 220px;
+    z-index: 1200;
+    transition: left 0.3s ease;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .overlay.show {
+    display: block;
+  }
+
+  .main {
+    padding-top: 60px;
+  }
+
+  .containerr {
+    overflow-x: hidden;
+  }
 }

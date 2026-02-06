@@ -44,17 +44,23 @@ public class WebSecurityConfig {
 	public UserDetailsService userDetailsService() {
 	    		UserDetails userAdmin = User.withDefaultPasswordEncoder()
 				.username("Dueño")
-				.password("allmylvl123parts")
+				.password("dueño")
 				.roles("ADMIN")
 				.build();
 
                 UserDetails user = User.withDefaultPasswordEncoder()
 				.username("Administrador")
-				.password("clubfithouse1908")
+				.password("administrador")
 				.roles("USER")
 				.build();
 
-		return new InMemoryUserDetailsManager(userAdmin, user);
+				UserDetails fabian = User.withDefaultPasswordEncoder()
+				.username("Fabian")
+				.password("fabian")
+				.roles("ADMIN")
+				.build();
+
+		return new InMemoryUserDetailsManager(userAdmin, user, fabian);
 	}
 
 }

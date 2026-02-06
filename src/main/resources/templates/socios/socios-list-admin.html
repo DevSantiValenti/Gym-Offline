@@ -26,7 +26,7 @@
                 <table id="sociosTable" class="display table-dark table-striped" style="width:100%">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>#</th>
                             <th>Nombre</th>
                             <th>DNI</th>
                             <th>Teléfono</th>
@@ -39,38 +39,48 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="socio, iterStat : ${socios}"> <!-- Esta parte hace que cuando elimines -->
-                            <td th:text="${iterStat.index + 1}"></td> <!-- un socio el id se reinicie -->
-                            <td th:text="${socio.nombreCompleto}"></td>
-                            <td th:text="${socio.dni}"></td>
-                            <td th:text="${socio.telefono}"></td>
-                            <td th:text="${socio.actividad != null ? socio.actividad.nombre : 'Sin actividad'}"></td>
-                            <td th:text="${#temporals.format(socio.fechaAlta, 'dd/MM/yyyy')}"></td>
-                            <td th:text="${#temporals.format(socio.fechaVencimiento, 'dd/MM/yyyy')}"></td>
-                            <td th:text="${socio.saldoPendiente != null ? ('$' + socio.saldoPendiente) : '-'}"
-                                th:class="${socio.saldoPendiente > 0 ? 'bg-danger fw-bold' : 'bg-success fw-bold'}"></td>
-                            <td>
+                        <tr th:each="socio, iterStat : ${socios}">
+                            <td data-label="ID" th:text="${iterStat.index + 1}"></td>
+                            <td data-label="Nombre" th:text="${socio.nombreCompleto}"></td>
+                            <td data-label="DNI" th:text="${socio.dni}"></td>
+                            <td data-label="Teléfono" th:text="${socio.telefono}"></td>
+                            <td data-label="Actividad"
+                                th:text="${socio.actividad != null ? socio.actividad.nombre : 'Sin actividad'}"></td>
+                            <td data-label="Fecha Alta" th:text="${#temporals.format(socio.fechaAlta, 'dd/MM/yyyy')}">
+                            </td>
+                            <td data-label="Vencimiento"
+                                th:text="${#temporals.format(socio.fechaVencimiento, 'dd/MM/yyyy')}"></td>
+
+                            <td data-label="Saldo"
+                                th:text="${socio.saldoPendiente != null ? ('$' + socio.saldoPendiente) : '-'}"
+                                th:class="${socio.saldoPendiente > 0 ? 'bg-danger fw-bold' : 'bg-success fw-bold'}">
+                            </td>
+
+                            <td data-label="Cuota">
                                 <span th:if="${socio.cuotaPaga != null}"
                                     th:class="${socio.cuotaPaga} ? 'estado-pagado' : 'estado-pendiente'"
-                                    th:text="${socio.cuotaPaga} ? 'PAGADA' : 'PENDIENTE'">
-                                    <!-- PAGADA -->
-                                </span>
+                                    th:text="${socio.cuotaPaga} ? 'PAGADA' : 'PENDIENTE'"></span>
                                 <span th:if="${socio.cuotaPaga == null}">-</span>
                             </td>
-                            <td class="acciones">
+
+                            <td data-label="Acciones" class="acciones">
                                 <a th:href="@{/socios/abonarCuota/{id}(id=${socio.id})}"
-                                    class="editar text-primary me-2 p-2 bg-dark rounded-3">Abonar Cuota</a>
-                                <a sec:authorize="${hasRole('ADMIN')}" href="#" class="eliminar text-danger p-2 bg-dark rounded-3"
+                                    class="editar text-primary p-2 bg-dark rounded-3">Abonar</a>
+
+                                <a sec:authorize="${hasRole('ADMIN')}" href="#"
+                                    class="eliminar text-danger p-2 bg-dark rounded-3"
                                     th:onclick="confirmarEliminacion('/socios/eliminar/' + [[${socio.id}]])">
                                     Eliminar
                                 </a>
+
                                 <a th:href="@{/socios/editar/{id}(id=${socio.id})}"
-                                    class="editar text-warning me-2 p-2 bg-dark rounded-3">
+                                    class="editar text-warning p-2 bg-dark rounded-3">
                                     Editar
                                 </a>
                             </td>
                         </tr>
                     </tbody>
+
                 </table>
             </div>
         </div>

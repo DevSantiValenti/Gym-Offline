@@ -66,23 +66,24 @@
 
                 <tbody>
                     <tr th:each="m : ${movimientos}">
-                        <td th:text="${m.actividad}"></td>
-                        <td th:text="${m.socioNombreCompleto}"></td>
-                        <td th:text="${m.detalle}"></td>
-                        <td th:text="${#temporals.format(m.fechaHora, 'dd/MM/yyyy HH:mm')}"></td>
-                        <td th:text="${m.formaPago}"></td>
-                        <td th:text="'$' + ${m.monto}"></td>
-                        <td class="acciones">
-                            <!-- <form th:action="@{/caja/eliminar/{id}(id=${m.id})}" method="post">
-                                <button type="submit" class="eliminar">Eliminar</button>
-                            </form> -->
-                            <a sec:authorize="${hasRole('ADMIN')}" href="#" class="eliminar text-danger p-2 bg-dark rounded-3"
+                        <td data-label="Actividad" th:text="${m.actividad}"></td>
+                        <td data-label="Socio" th:text="${m.socioNombreCompleto}"></td>
+                        <td data-label="Detalle" th:text="${m.detalle}"></td>
+                        <td data-label="Fecha / Hora" th:text="${#temporals.format(m.fechaHora, 'dd/MM/yyyy HH:mm')}">
+                        </td>
+                        <td data-label="Forma de Pago" th:text="${m.formaPago}"></td>
+                        <td data-label="Monto" th:text="'$' + ${m.monto}"></td>
+
+                        <td data-label="Acciones" class="acciones">
+                            <a sec:authorize="${hasRole('ADMIN')}" href="#"
+                                class="eliminar text-danger p-2 bg-dark rounded-3"
                                 th:onclick="confirmarEliminacion('/caja/eliminar/' + [[${m.id}]])">
                                 Eliminar
                             </a>
                         </td>
                     </tr>
                 </tbody>
+
             </table>
         </div>
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="es-AR" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
 
 <head>
     <meta charset="UTF-8">
@@ -23,7 +24,7 @@
                 <table id="actividadTable" class="display table-dark table-striped" style="width:100%">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>#</th>
                             <th>Nombre</th>
                             <th>MONTO</th>
                             <th>Cantidad de Alumnos</th>
@@ -36,41 +37,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="act : ${actividad}"> <!-- Esta parte hace que cuando elimines -->
-                            <td th:text="${act.id}"></td> <!-- un socio el id se reinicie -->
-                            <td th:text="${act.nombre}"></td>
-                            <td th:text="${act.monto}"></td>
-                            <td th:text="${#lists.size(act.socios)}"></td>
-                            <td>
+                        <tr th:each="act, iterStat : ${actividad}">
+                            <td data-label="ID" th:text="${iterStat.index + 1}"></td>
+                            <td data-label="Nombre" th:text="${act.nombre}"></td>
+                            <td data-label="Monto" th:text="${act.monto}"></td>
+                            <td data-label="Alumnos" th:text="${#lists.size(act.socios)}"></td>
+
+                            <td data-label="Acciones" class="acciones">
                                 <a th:href="@{/actividades/editar/{id}(id=${act.id})}"
-                                    class="editar text-warning me-2 p-2 bg-dark rounded-3">Editar</a>
-                                <a sec:authorize="${hasRole('ADMIN')}" href="#" class="eliminar text-danger p-2 bg-dark rounded-3"
+                                    class="editar text-warning p-2 bg-dark rounded-3">
+                                    Editar
+                                </a>
+
+                                <a sec:authorize="${hasRole('ADMIN')}" href="#"
+                                    class="eliminar text-danger p-2 bg-dark rounded-3"
                                     th:onclick="confirmarEliminacion('/actividades/eliminar/' + [[${act.id}]])">
                                     Eliminar
                                 </a>
                             </td>
-                            <!-- <td th:text="${socio.actividad}"></td>
-                            <td th:text="${#temporals.format(socio.fechaAlta, 'dd/MM/yyyy')}"></td>
-                            <td th:text="${#temporals.format(socio.fechaVencimiento, 'dd/MM/yyyy')}"></td>
-                            <td th:text="${socio.saldoPendiente != null ? ('$' + socio.saldoPendiente) : '-'}"></td>
-                            <td>
-                                <span th:if="${socio.cuotaPaga != null}"
-                                    th:class="${socio.cuotaPaga} ? 'estado-pagado' : 'estado-pendiente'"
-                                    th:text="${socio.cuotaPaga} ? 'PAGADA' : 'PENDIENTE'">
-                                    PAGADA 
-                                </span>
-                                <span th:if="${socio.cuotaPaga == null}">-</span>
-                            </td> -->
-                            <!-- <td class="acciones">
-                                <a th:href="@{/actividades/editar/{id}(id=${socio.id})}"
-                                    class="editar text-warning me-2">Editar</a>
-                                <a href="#" class="eliminar text-danger"
-                                    th:onclick="'confirmarEliminacion(' + ${socio.id} + ');'">
-                                    Eliminar
-                                </a>
-                            </td> -->
                         </tr>
                     </tbody>
+
                 </table>
             </div>
         </div>

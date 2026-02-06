@@ -7,6 +7,45 @@
 
     <link rel="stylesheet" th:href="@{/css/estadisticas.css}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* ===============================
+   MOBILE – ESTADÍSTICAS
+================================ */
+
+        /* ===============================
+   CHARTS – ALTURA RESPONSIVE
+================================ */
+
+        .chart-container {
+            width: 100%;
+            position: relative;
+        }
+
+        /* 📱 Mobile */
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 260px;
+            }
+        }
+
+        /* 💻 Desktop */
+        @media (min-width: 769px) {
+            .ingresos-chart {
+                height: 420px;
+                /* 🔥 MÁS ALTO */
+            }
+
+            .inscripciones-chart {
+                height: 360px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .ingresos-chart {
+                height: 480px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -38,12 +77,12 @@
             </div>
         </form>
 
-        <div class="table-wrapper">
+        <div class="table-wrapper chart-container ingresos-chart">
             <canvas id="barChart"></canvas>
         </div>
 
         <!-- Chart de las inscripciones en el año, por mes -->
-        <div class="table-wrapper" style="margin-top:24px;">
+        <div class="table-wrapper chart-container inscripciones-chart" style="margin-top:24px;">
             <canvas id="inscripcionesChart"></canvas>
         </div>
 
