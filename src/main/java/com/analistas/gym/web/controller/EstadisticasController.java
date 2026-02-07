@@ -12,12 +12,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.analistas.gym.model.service.IGastoService;
 import com.analistas.gym.model.service.MovimientoCajaService;
 
 @Controller
 @RequestMapping("/estadisticas")
-@Secured({"ROLE_ADMIN"})
+@Secured({ "ROLE_ADMIN" })
 public class EstadisticasController {
+
+        @Autowired
+        IGastoService gastoService;
 
         @Autowired
         private MovimientoCajaService cajaService;
@@ -56,6 +60,9 @@ public class EstadisticasController {
                 // Canva de inscripciones por mes:
                 List<Integer> totalesIns = cajaService.obtenerTotalesPorMesYAnio(anio);
                 List<Integer> inscripcionesCounts = cajaService.obtenerInscripcionesPorMesYAnio(anio);
+
+                List<Integer> gastosMensuales = gastoService.obtenerTotalesPorMes(anio);
+                model.addAttribute("gastos", gastosMensuales);
 
                 model.addAttribute("meses", meses);
                 model.addAttribute("totales", totalesIns);

@@ -282,4 +282,38 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
+    // Chart Gastos:
+    if (window.gastos && document.getElementById("balanceChart")) {
+
+        new Chart(document.getElementById("balanceChart"), {
+            type: 'bar',
+            data: {
+                labels: etiquetas,
+                datasets: [
+                    {
+                        label: 'Ingresos',
+                        data: valores,
+                        backgroundColor: '#00ff9c'
+                    },
+                    {
+                        label: 'Gastos',
+                        data: window.gastos,
+                        backgroundColor: '#ff4d4d'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Ingresos vs Gastos'
+                    }
+                }
+            }
+        });
+    }
+
 });

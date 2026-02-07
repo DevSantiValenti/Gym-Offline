@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo}"></title>
+
+    <link rel="icon" type="image/png" th:href="@{/img/captain-gym.png}">
+    <style>
+        /* ===============================
+   CONTENEDOR
+================================ */
+        .gastos-container {
+            padding: 12px;
+        }
+
+        .titulo-seccion {
+            margin-bottom: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* ===============================
+   CARD
+================================ */
+        .card-gastos {
+            background: linear-gradient(145deg, #0f0f0f, #1a1a1a);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .card-title {
+            margin-bottom: 16px;
+            font-weight: 600;
+            color: #ff4d4d;
+        }
+
+        /* ===============================
+   FORM
+================================ */
+        .card-gastos label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .card-gastos input,
+        .card-gastos select {
+            background-color: #0b0b0b;
+            color: #fff;
+            border: 1px solid #333;
+        }
+
+        .card-gastos input:focus,
+        .card-gastos select:focus {
+            border-color: #ff4d4d;
+            box-shadow: none;
+        }
+
+        /* ===============================
+   TABLA
+================================ */
+        #gastosTable {
+            width: 100%;
+            color: #fff;
+        }
+
+        #gastosTable thead th {
+            background-color: #111;
+            border-bottom: 1px solid #ff4d4d;
+        }
+
+        #gastosTable tbody tr {
+            background-color: #0d0d0d;
+        }
+
+        #gastosTable tbody tr:hover {
+            background-color: rgba(255, 77, 77, 0.08);
+        }
+
+        /* ===============================
+   MONTO / BADGES
+================================ */
+        .monto-negativo {
+            color: #ff4d4d;
+            font-weight: 600;
+        }
+
+        .badge-tipo {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* ===============================
+   BOTONES
+================================ */
+        .btn-eliminar {
+            color: #ff4d4d;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .btn-eliminar:hover {
+            text-decoration: underline;
+        }
+
+        /* ===============================
+   DATATABLES DARK
+================================ */
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_info {
+            color: #fff;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            color: #fff !important;
+            background: #111 !important;
+            border-radius: 6px;
+            border: none;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: #ff4d4d !important;
+            color: #000 !important;
+        }
+
+        /* ===============================
+   PLACEHOLDERS
+================================ */
+        .card-gastos input::placeholder {
+            color: rgba(255, 255, 255, 0.35);
+            font-style: italic;
+        }
+
+        .card-gastos input::-webkit-input-placeholder {
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .card-gastos input:-ms-input-placeholder {
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        /* ===============================
+   INPUT FOCUS FIX
+================================ */
+        .card-gastos input:focus,
+        .card-gastos select:focus {
+            background-color: #0b0b0b !important;
+            color: #fff !important;
+            border-color: #ff4d4d;
+            box-shadow: 0 0 0 2px rgba(255, 77, 77, 0.25);
+            outline: none;
+        }
+
+        /* ===============================
+   TABLA – ESPACIADO
+================================ */
+        #gastosTable th,
+        #gastosTable td {
+            padding: 14px 16px;
+            vertical-align: middle;
+        }
+
+        #gastosTable td {
+            font-size: 0.9rem;
+        }
+
+        /* ===============================
+   BOTÓN ELIMINAR
+================================ */
+        .btn-eliminar {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(255, 77, 77, 0.12);
+            color: #ff4d4d;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: all .2s ease;
+        }
+
+        .btn-eliminar:hover {
+            background: #ff4d4d;
+            color: #000;
+        }
+
+        /* ===============================
+   BOTÓN GUARDAR
+================================ */
+        .boton-nuevo {
+            padding: 10px 26px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #ff4d4d, #ff0000);
+            color: #000;
+            font-weight: 700;
+            border: none;
+            letter-spacing: 0.5px;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .boton-nuevo:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(255, 77, 77, 0.4);
+        }
+
+        /* ===============================
+   MOBILE
+================================ */
+        @media (max-width: 768px) {
+
+            .card-gastos {
+                padding: 16px;
+            }
+
+            .titulo-seccion {
+                text-align: center;
+            }
+
+            .card-title {
+                text-align: center;
+            }
+
+            .card-gastos form .col-md-2,
+            .card-gastos form .col-md-3 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+
+            .boton-nuevo {
+                width: 100%;
+                margin-top: 8px;
+            }
+
+            /* Tabla */
+            #gastosTable th,
+            #gastosTable td {
+                padding: 12px;
+                font-size: 0.85rem;
+            }
+        }
+
+        .badge-tipo.SERVICIO {
+            color: #00d4ff;
+        }
+
+        .badge-tipo.EQUIPAMIENTO {
+            color: #ffb300;
+        }
+
+        .badge-tipo.ARREGLO {
+            color: #ff7043;
+        }
+
+        .badge-tipo.SUELDO {
+            color: #a5ff4d;
+        }
+
+        /* ===============================
+   DATE INPUT – FIX MOBILE
+================================ */
+        .card-gastos input[type="date"] {
+            color-scheme: light;
+            /* 🔥 clave para iOS */
+            background-color: #ffdbdb !important;
+            color: #000000 !important;
+        }
+
+        /* Placeholder fecha */
+        .card-gastos input[type="date"]::placeholder {
+            color: #555;
+        }
+
+        /* ===============================
+   TABLA – MOBILE FIX
+================================ */
+        @media (max-width: 768px) {
+
+            .table-wrapper {
+                overflow-x: hidden;
+            }
+
+            #gastosTable {
+                width: 100% !important;
+            }
+
+            #gastosTable thead {
+                display: none;
+                /* 🔥 encabezado fuera */
+            }
+
+            #gastosTable tbody tr {
+                display: block;
+                margin-bottom: 14px;
+                border-radius: 12px;
+                padding: 12px;
+                background: rgba(255, 255, 255, 0.04);
+                box-shadow: 0 0 12px rgba(255, 0, 0, 0.08);
+            }
+
+            #gastosTable tbody td {
+                display: flex;
+                justify-content: space-between;
+                padding: 8px 0;
+                border: none;
+                font-size: 0.85rem;
+            }
+
+            #gastosTable tbody td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                opacity: 0.7;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Esta va a ser la parte que se debe reeemplazar en las demas páginas, el contenido -->
+    <div layout:fragment="contenido" class="list-container gastos-container">
+
+        <h2 class="titulo-seccion">GASTOS</h2>
+
+        <!-- FORM CARD -->
+        <div class="card-gastos mb-4">
+            <h5 class="card-title">Registrar nuevo gasto</h5>
+
+            <form th:action="@{/gastos/guardar}" method="post" class="row g-3">
+
+                <div class="col-md-3">
+                    <label>Concepto</label>
+                    <input class="form-control" th:field="${gasto.concepto}" placeholder="Ej: Luz, Internet">
+                </div>
+
+                <div class="col-md-3">
+                    <label>Tipo</label>
+                    <select class="form-select" th:field="${gasto.tipoGasto}">
+                        <option th:each="t : ${tipos}" th:value="${t}" th:text="${t}"></option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label>Monto</label>
+                    <input type="number" class="form-control" th:field="${gasto.monto}">
+                </div>
+
+                <div class="col-md-2">
+                    <label>Fecha</label>
+                    <input type="date" class="form-control" th:field="${gasto.fecha}">
+                </div>
+
+                <div class="col-md-2">
+                    <label>Forma de pago</label>
+                    <select class="form-select" th:field="${gasto.formaPago}">
+                        <option value="EFECTIVO">Efectivo</option>
+                        <option value="TRANSFERENCIA">Transferencia</option>
+                    </select>
+                </div>
+
+                <div class="col-md-12 text-end mt-2">
+                    <button class="boton-nuevo">Guardar gasto</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- TABLE CARD -->
+        <div class="card-gastos">
+            <h5 class="card-title">Listado de gastos</h5>
+
+            <div class="table-wrapper">
+                <table id="gastosTable" class="display nowrap">
+                    <thead>
+                        <tr>
+                            <th>Concepto</th>
+                            <th>Tipo</th>
+                            <th>Fecha</th>
+                            <th>Monto</th>
+                            <th>Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="g : ${gastos}">
+                            <td data-label="Concepto" th:text="${g.concepto}"></td>
+
+                            <td data-label="Tipo">
+                                <span class="badge-tipo" th:classappend="${g.tipoGasto}"
+                                    th:text="${g.tipoGasto}"></span>
+                            </td>
+
+                            <td data-label="Fecha" th:text="${g.fecha}"></td>
+
+                            <td data-label="Monto" class="monto-negativo" th:text="'$ ' + ${g.monto}"></td>
+
+                            <td data-label="Eliminar">
+                                <a th:href="@{/gastos/eliminar/{id}(id=${g.id})}" class="btn-eliminar">Eliminar</a>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Mis JS -->
+    <script th:fragment="js" th:src="@{/js/gastos.js}"></script>
+</body>
+
+</html>

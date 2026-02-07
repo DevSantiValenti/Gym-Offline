@@ -45,6 +45,11 @@
                 height: 480px;
             }
         }
+
+        .resumen-card.gastos {
+            background: linear-gradient(135deg, #ff4d4d, #ff7676);
+            color: white;
+        }
     </style>
 </head>
 
@@ -86,6 +91,12 @@
             <canvas id="inscripcionesChart"></canvas>
         </div>
 
+        <!-- Gastos -->
+        <div class="table-wrapper chart-container ingresos-chart" style="margin-top:32px;">
+            <canvas id="balanceChart"></canvas>
+        </div>
+
+
     </div>
 
     <!-- ⚠️ TODO EL JS VA DENTRO DEL FRAGMENTO -->
@@ -96,6 +107,7 @@
             window.labels = /*[[${meses}]]*/[];
             window.dataValues = /*[[${totales}]]*/[];
             window.inscripciones = /*[[${inscripcionesCounts}]]*/[];
+            window.gastos = /*[[${gastos}]]*/[];
             /*]]>*/
         </script>
 
