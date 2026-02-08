@@ -59,13 +59,23 @@ body {
   transition: 0.3s;
 }
 
-.sidebar ul li a {
+.sidebar ul li a,
+.sidebar ul li a:visited,
+.sidebar ul li a:hover,
+.sidebar ul li a:focus {
+  color: #fff;
   text-decoration: none;
 }
 
-.sidebar ul li a:visited {
-  color: inherit;
+.sidebar a.active {
+    color: #ff4d4d !important;
+    font-weight: 600;
 }
+
+
+/* .sidebar ul li a:visited {
+  color: inherit;
+} */
 
 .sidebar ul li:hover {
   color: #e60000;

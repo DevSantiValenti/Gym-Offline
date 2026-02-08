@@ -22,6 +22,8 @@ import com.analistas.gym.model.domain.TipoMovimiento;
 import com.analistas.gym.model.service.IActividadService;
 import com.analistas.gym.model.service.ISocioService;
 import com.analistas.gym.model.service.MovimientoCajaService;
+import com.analistas.gym.model.service.ReciboPdfService;
+import com.analistas.gym.model.service.WhatsAppService;
 
 import jakarta.validation.Valid;
 
@@ -34,6 +36,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequestMapping("/socios")
 @SessionAttributes("socioRegistro")
 public class SocioController {
+
+    @Autowired
+    ReciboPdfService reciboPdfService;
+
+    @Autowired
+    WhatsAppService whatsappService;
 
     @Autowired
     ISocioService socioService;
@@ -78,7 +86,6 @@ public class SocioController {
             return "socios/socios-form.html";
         }
 
-        
         if (socio.getId() != null) {
 
             Socio socioDB = socioService.buscarPorId(socio.getId());
@@ -170,6 +177,15 @@ public class SocioController {
             cajaService.guardar(movimiento);
 
             redirectAttributes.addFlashAttribute("mensaje", "Cuota abonada con éxito.");
+
+            // Justo antes del return final, generamos la URL
+            byte[] pdf = reciboPdfService.generarReciboPdf(socioExistente, dto.getMonto());
+
+            whatsappService.enviarReciboPdf(
+                    socioExistente,
+                    pdf,
+                    "recibo-captain-gym.pdf");
+
             return "redirect:/home";
         }
 
@@ -185,7 +201,7 @@ public class SocioController {
         socio.setNombreCompleto(dto.getNombreCompleto());
         socio.setDni(dto.getDni());
         socio.setFechaNacimiento(dto.getFechaNacimiento());
-        socio.setTelefono(dto.getTelefono());
+        socio.setTelefono("549" + dto.getTelefono());
         socio.setProfesion(dto.getProfesion());
         socio.setDireccion(dto.getDireccion());
 
@@ -196,6 +212,14 @@ public class SocioController {
         socio.setFechaVencimiento(dto.getFechaVencimiento());
         socio.setSaldoPendiente(cuota - dto.getMonto());
         socio.setCuotaPaga(true);
+
+        // Justo antes del return final, generamos la URL
+        byte[] pdf = reciboPdfService.generarReciboPdf(socio, dto.getMonto());
+
+        whatsappService.enviarReciboPdf(
+                socio,
+                pdf,
+                "recibo-captain-gym.pdf");
 
         socioService.guardar(socio);
 
@@ -240,7 +264,7 @@ public class SocioController {
 
     // Eliminar Socio
     @GetMapping("/eliminar/{id}")
-    @Secured({"ROLE_ADMIN"})
+    @Secured({ "ROLE_ADMIN" })
     public String eliminarSocio(@PathVariable Long id, RedirectAttributes redirectAttributes) {
 
         Socio socio = socioService.buscarPorId(id);
