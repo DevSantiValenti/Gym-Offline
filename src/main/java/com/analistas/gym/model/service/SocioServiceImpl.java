@@ -100,7 +100,38 @@ public class SocioServiceImpl implements ISocioService {
 
     @Override
     public void eliminar(Long id) {
-        socioRepository.deleteById(id);
+        Socio socio = socioRepository.findById(id).orElse(null);
+        if (socio != null) {
+            socio.setEliminado(true);
+            socio.setFechaEliminacion(LocalDateTime.now());
+            socioRepository.save(socio);
+        }
+    }
+
+    @Override
+    public List<Socio> listarEliminados() {
+        return socioRepository.findByEliminadoTrueOrderByFechaEliminacionDesc();
+    }
+
+    @Override
+    public List<Socio> listarEliminadosPorFecha(LocalDate desde, LocalDate hasta) {
+
+        LocalDateTime inicio = desde.atStartOfDay();
+        LocalDateTime fin = hasta.atTime(23, 59, 59);
+
+        return socioRepository
+                .findByEliminadoTrueAndFechaEliminacionBetween(inicio, fin);
+    }
+
+    @Override
+    public void restaurarSocio(Long id) {
+        Socio socio = socioRepository.findById(id).orElse(null);
+
+        if (socio != null) {
+            socio.setEliminado(false);
+            socio.setFechaEliminacion(null);
+            socioRepository.save(socio);
+        }
     }
 
     private void resetearVecesIngresadoSiCorresponde(Socio socio) {

@@ -1,5 +1,6 @@
 package com.analistas.gym.model.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,5 +23,9 @@ public interface ISocioService  {
     public Optional<Socio> actualizarVecesIngresado(String dni);
 
     public List<Socio> listarSociosActualizados();
+    void restaurarSocio(Long id);
 
+    List<Socio> listarEliminados();
+
+    List<Socio> listarEliminadosPorFecha(LocalDate desde, LocalDate hasta);
 }

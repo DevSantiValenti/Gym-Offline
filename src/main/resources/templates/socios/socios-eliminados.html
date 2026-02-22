@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${titulo}"></title>
+    <link rel="stylesheet" href="/css/caja.css">
+</head>
+
+<body>
+
+    <div layout:fragment="contenido" class="list-container">
+        <h2>SOCIOS ELIMINADOS</h2>
+
+        <!-- 🔍 FILTROS (MISMO SISTEMA QUE CAJA) -->
+        <form method="get" th:action="@{/socios/eliminados}" class="row g-3 mb-4 align-items-end">
+
+            <div class="col-md-3">
+                <label class="form-label">Desde</label>
+                <input type="date" name="desde" th:value="${desde}" class="form-control">
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Hasta</label>
+                <input type="date" name="hasta" th:value="${hasta}" class="form-control">
+            </div>
+
+            <div class="col-md-6 text-md-end text-start">
+                <button class="boton-nuevo mt-2">
+                    🔍 Filtrar
+                </button>
+
+                <a th:href="@{/socios/eliminados}" class="boton-nuevo mt-2" style="background-color:#6c757d;">
+                    Limpiar
+                </a>
+            </div>
+
+        </form>
+
+        <!-- 📊 TABLA -->
+        <div class="table-wrapper">
+            <table id="sociosEliminadosTable" class="display table-dark table-striped" style="width:100%">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>DNI</th>
+                        <th>Actividad</th>
+                        <th>Fecha Eliminación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="socio, iterStat : ${socios}">
+                        <td th:text="${iterStat.index + 1}"></td>
+                        <td th:text="${socio.nombreCompleto}"></td>
+                        <td th:text="${socio.dni}"></td>
+                        <td th:text="${socio.actividad != null ? socio.actividad.nombre : 'Sin actividad'}"></td>
+                        <td th:text="${#temporals.format(socio.fechaEliminacion, 'dd/MM/yyyy HH:mm')}"></td>
+
+                        <td class="acciones">
+                            <a href="#" class="editar text-success p-2 bg-dark rounded-3"
+                                th:onclick="confirmarRestauracion('/socios/restaurar/' + [[${socio.id}]])">
+                                Restaurar
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+    <script th:fragment="js">
+        $(document).ready(function () {
+            $("#sociosEliminadosTable").DataTable({
+                responsive: true,
+                language: {
+                    lengthMenu: "Mostrar _MENU_ registros",
+                    search: "Buscar:",
+                    zeroRecords: "No hay socios eliminados",
+                    emptyTable: "No hay socios eliminados",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    infoEmpty: "Mostrando 0 a 0 de 0 registros",
+                    infoFiltered: "(filtrado de _MAX_ registros totales)",
+                    loadingRecords: "Cargando...",
+                    processing: "Procesando...",
+                    paginate: {
+                        first: "Primero",
+                        last: "Último",
+                        next: "Siguiente",
+                        previous: "Anterior"
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

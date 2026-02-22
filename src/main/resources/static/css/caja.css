@@ -263,3 +263,65 @@ tr:hover {
         width: 100%;
     }
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .filtros-eliminados {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filtros-eliminados .form-group {
+        width: 100%;
+    }
+
+    .filtros-eliminados .btn {
+        width: 100%;
+    }
+}
+
+/* ===============================
+   DATATABLES ALIGN FIX
+================================ */
+
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 10px;
+    text-align: right;
+}
+
+.dataTables_wrapper .dataTables_length {
+    margin-bottom: 10px;
+}
+
+/* en móvil */
+@media (max-width: 768px) {
+    .dataTables_wrapper .dataTables_filter {
+        text-align: left;
+        margin-top: 10px;
+    }
+}
+
+/* ===============================
+   DATATABLES ALIGN FIX
+================================ */
+
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 10px;
+    text-align: right;
+}
+
+.dataTables_wrapper .dataTables_length {
+    margin-bottom: 10px;
+}
+
+/* en móvil */
+@media (max-width: 768px) {
+    .dataTables_wrapper .dataTables_filter {
+        text-align: left;
+        margin-top: 10px;
+    }
+}
+
+.boton-nuevo {
+    vertical-align: middle;
+}

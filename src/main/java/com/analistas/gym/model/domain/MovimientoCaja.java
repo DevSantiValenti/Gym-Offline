@@ -33,6 +33,6 @@ public class MovimientoCaja {
     private Integer monto;
 
     @Enumerated(EnumType.STRING)
-    private TipoMovimiento tipoMovimiento; // CUOTA / INSCRIPCION
+    private TipoMovimiento tipoMovimiento; // CUOTA / INSCRIPCION / DIARIO
 
 }
