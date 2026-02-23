@@ -183,10 +183,19 @@ public class SocioController {
             // Justo antes del return final, generamos la URL
             byte[] pdf = reciboPdfService.generarReciboPdf(socioExistente, dto.getMonto());
 
-            whatsappService.enviarReciboPdf(
-                    socioExistente,
-                    pdf,
-                    "recibo-captain-gym.pdf");
+            // whatsappService.enviarReciboPdf(
+            //         socioExistente,
+            //         pdf,
+            //         "recibo-captain-gym.pdf");
+
+            try {
+                whatsappService.enviarReciboPdf(
+                        socioExistente,
+                        pdf,
+                        "recibo-captain-gym.pdf");
+            } catch (Exception e) {
+                System.out.println("⚠ Error enviando WhatsApp: " + e.getMessage());
+            }
 
             return "redirect:/home";
         }
@@ -218,12 +227,23 @@ public class SocioController {
         // Justo antes del return final, generamos la URL
         byte[] pdf = reciboPdfService.generarReciboPdf(socio, dto.getMonto());
 
-        whatsappService.enviarReciboPdf(
-                socio,
-                pdf,
-                "recibo-captain-gym.pdf");
+        // whatsappService.enviarReciboPdf(
+        // socio,
+        // pdf,
+        // "recibo-captain-gym.pdf");
+
+        // socioService.guardar(socio);
 
         socioService.guardar(socio);
+
+        try {
+            whatsappService.enviarReciboPdf(
+                    socio,
+                    pdf,
+                    "recibo-captain-gym.pdf");
+        } catch (Exception e) {
+            System.out.println("⚠ Error enviando WhatsApp: " + e.getMessage());
+        }
 
         // 👉 REGISTRO EN CAJA (INSCRIPCIÓN)
         MovimientoCaja movimiento = new MovimientoCaja();
