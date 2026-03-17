@@ -26,55 +26,55 @@ public class RecordatorioCuotaService {
     /**
      * Se ejecuta TODOS LOS DÍAS a las 12:00
      */
-    @Scheduled(cron = "0 0 12 * * *")
-    // @Scheduled(cron = "0 */1 * * * *")
-    public void enviarRecordatoriosCuota() {
+    // @Scheduled(cron = "0 0 12 * * *")
+    // // @Scheduled(cron = "0 */1 * * * *")
+    // public void enviarRecordatoriosCuota() {
 
-        // 👉 mañana
-        // Si quisiera cambiar a 2 dias antes, cambio el plusDays por 2, y así
-        LocalDate fechaObjetivo = LocalDate.now().plusDays(1);
+    //     // 👉 mañana
+    //     // Si quisiera cambiar a 2 dias antes, cambio el plusDays por 2, y así
+    //     LocalDate fechaObjetivo = LocalDate.now().plusDays(1);
 
-        List<Socio> socios = socioRepository.findByFechaVencimiento(fechaObjetivo);
+    //     List<Socio> socios = socioRepository.findByFechaVencimiento(fechaObjetivo);
 
-        for (Socio socio : socios) {
+    //     for (Socio socio : socios) {
 
-            if (socio.getTelefono() == null || socio.getTelefono().isBlank()) {
-                continue;
-            }
+    //         if (socio.getTelefono() == null || socio.getTelefono().isBlank()) {
+    //             continue;
+    //         }
 
-            String mensaje = construirMensaje(socio);
+    //         String mensaje = construirMensaje(socio);
 
-            whatsappService.enviarMensajeTexto(
-                    socio.getTelefono(),
-                    mensaje
-            );
-        }
-    }
+    //         whatsappService.enviarMensajeTexto(
+    //                 socio.getTelefono(),
+    //                 mensaje
+    //         );
+    //     }
+    // }
 
-    private String construirMensaje(Socio socio) {
+    // private String construirMensaje(Socio socio) {
 
-        String fecha = socio.getFechaVencimiento()
-                .format(DateTimeFormatter.ofPattern("dd/MM"));
+    //     String fecha = socio.getFechaVencimiento()
+    //             .format(DateTimeFormatter.ofPattern("dd/MM"));
 
-        return """
-                [Mensaje programado del día %s]
+    //     return """
+    //             [Mensaje programado del día %s]
 
-                🏋️‍♂️ CAPTAIN GYM
-                Hola %s 👋
+    //             🏋️‍♂️ CAPTAIN GYM
+    //             Hola %s 👋
 
-                Le informamos que su cuota de la actividad %s
-                vence mañana (%s).
+    //             Le informamos que su cuota de la actividad %s
+    //             vence mañana (%s).
 
-                💰 Monto: $ %d
+    //             💰 Monto: $ %d
 
-                ¡Lo esperamos!
-                """.formatted(
-                LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM")),
-                socio.getNombreCompleto(),
-                socio.getActividad().getNombre(),
-                fecha,
-                socio.getActividad().getMonto()
-        );
-    }
+    //             ¡Lo esperamos!
+    //             """.formatted(
+    //             LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM")),
+    //             socio.getNombreCompleto(),
+    //             socio.getActividad().getNombre(),
+    //             fecha,
+    //             socio.getActividad().getMonto()
+    //     );
+    // }
 }
 

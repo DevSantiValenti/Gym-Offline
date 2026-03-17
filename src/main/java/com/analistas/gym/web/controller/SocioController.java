@@ -179,21 +179,16 @@ public class SocioController {
             redirectAttributes.addFlashAttribute("mensaje", "Cuota abonada con éxito.");
 
             // Justo antes del return final, generamos la URL
-            byte[] pdf = reciboPdfService.generarReciboPdf(socioExistente, dto.getMonto());
+            // byte[] pdf = reciboPdfService.generarReciboPdf(socioExistente, dto.getMonto());
 
-            // whatsappService.enviarReciboPdf(
-            //         socioExistente,
-            //         pdf,
-            //         "recibo-captain-gym.pdf");
-
-            try {
-                whatsappService.enviarReciboPdf(
-                        socioExistente,
-                        pdf,
-                        "recibo-captain-gym.pdf");
-            } catch (Exception e) {
-                System.out.println("⚠ Error enviando WhatsApp: " + e.getMessage());
-            }
+            // try {
+            //     whatsappService.enviarReciboPdf(
+            //             socioExistente,
+            //             pdf,
+            //             "recibo-captain-gym.pdf");
+            // } catch (Exception e) {
+            //     System.out.println("⚠ Error enviando WhatsApp: " + e.getMessage());
+            // }
 
             return "redirect:/home";
         }
@@ -223,7 +218,7 @@ public class SocioController {
         socio.setCuotaPaga(true);
 
         // Justo antes del return final, generamos la URL
-        byte[] pdf = reciboPdfService.generarReciboPdf(socio, dto.getMonto());
+        // byte[] pdf = reciboPdfService.generarReciboPdf(socio, dto.getMonto());
 
         // whatsappService.enviarReciboPdf(
         // socio,
@@ -234,14 +229,14 @@ public class SocioController {
 
         socioService.guardar(socio);
 
-        try {
-            whatsappService.enviarReciboPdf(
-                    socio,
-                    pdf,
-                    "recibo-captain-gym.pdf");
-        } catch (Exception e) {
-            System.out.println("⚠ Error enviando WhatsApp: " + e.getMessage());
-        }
+        // try {
+        //     whatsappService.enviarReciboPdf(
+        //             socio,
+        //             pdf,
+        //             "recibo-captain-gym.pdf");
+        // } catch (Exception e) {
+        //     System.out.println("⚠ Error enviando WhatsApp: " + e.getMessage());
+        // }
 
         // 👉 REGISTRO EN CAJA (INSCRIPCIÓN)
         MovimientoCaja movimiento = new MovimientoCaja();

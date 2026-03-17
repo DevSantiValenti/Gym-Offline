@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/webhook/evolution")
 public class EvolutionWebhookController {
 
-    @PostMapping
-    public ResponseEntity<?> receive(@RequestBody Map<String, Object> payload) {
+    // @PostMapping
+    // public ResponseEntity<?> receive(@RequestBody Map<String, Object> payload) {
 
-        System.out.println("Webhook recibido:");
-        System.out.println(payload);
+    //     System.out.println("Webhook recibido:");
+    //     System.out.println(payload);
 
-        return ResponseEntity.ok().build();
-    }
+    //     return ResponseEntity.ok().build();
+    // }
 }
