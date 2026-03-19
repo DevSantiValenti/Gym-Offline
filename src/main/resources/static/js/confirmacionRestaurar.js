@@ -1,12 +1,11 @@
 function confirmarRestauracion(url) {
   Swal.fire({
-    title: '¿RESTURAR SOCIO?',
-    text: 'El socio volverá a estar activo',
+    title: '¿Restaurar socio?',
+    text: 'El socio volverá a estar activo.',
     icon: 'question',
 
     background: 'rgba(0,0,0,0.95)',
     color: '#ffffff',
-
     iconColor: '#00ff9c',
 
     showCancelButton: true,
@@ -19,9 +18,9 @@ function confirmarRestauracion(url) {
     customClass: {
       popup: 'swal-neon',
       title: 'swal-title-neon',
-      icon: 'swal-icon-neon', // 👈 IMPORTANTE
       confirmButton: 'swal-btn-confirm',
-      cancelButton: 'swal-btn-cancel'
+      cancelButton: 'swal-btn-cancel',
+      icon: 'swal-icon-neon' // 👈 ESTA LÍNEA ES CLAVE
     }
   }).then((result) => {
     if (result.isConfirmed) {

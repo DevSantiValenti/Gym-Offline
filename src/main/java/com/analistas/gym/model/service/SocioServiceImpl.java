@@ -23,7 +23,7 @@ public class SocioServiceImpl implements ISocioService {
 
     @Override
     public List<Socio> listarSocios() {
-        return (List<Socio>) socioRepository.findAll();
+        return socioRepository.findByEliminadoFalse();
     }
 
     @Override
@@ -66,14 +66,14 @@ public class SocioServiceImpl implements ISocioService {
 
     @Override
     public List<Socio> buscarTodos() {
-        return (List<Socio>) socioRepository.findAll();
+        return socioRepository.findByEliminadoFalse();
     }
 
-    @Transactional
     @Override
+    @Transactional
     public List<Socio> listarSociosActualizados() {
 
-        List<Socio> socios = (List<Socio>) socioRepository.findAll();
+        List<Socio> socios = socioRepository.findByEliminadoFalse(); // ✅ SOLO ACTIVOS
         LocalDate hoy = LocalDate.now();
 
         for (Socio socio : socios) {

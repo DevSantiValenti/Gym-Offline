@@ -61,11 +61,16 @@
                         <td th:text="${socio.actividad != null ? socio.actividad.nombre : 'Sin actividad'}"></td>
                         <td th:text="${#temporals.format(socio.fechaEliminacion, 'dd/MM/yyyy HH:mm')}"></td>
 
-                        <td class="acciones">
-                            <a href="#" class="editar text-success p-2 bg-dark rounded-3"
+                        <td class="acciones text-center">
+
+                            <button type="button" class="btn-restaurar"
                                 th:onclick="confirmarRestauracion('/socios/restaurar/' + [[${socio.id}]])">
+
+                                <i class="bi bi-arrow-counterclockwise"></i>
                                 Restaurar
-                            </a>
+
+                            </button>
+
                         </td>
                     </tr>
                 </tbody>
