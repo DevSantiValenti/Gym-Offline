@@ -5,12 +5,14 @@ body {
 }
 
 body {
-  background: linear-gradient(
-    217deg,
-    rgba(0, 38, 255, 1) 0%,
-    rgba(0, 0, 0, 1) 50%,
-    rgba(255, 0, 221, 1) 100%
-  );
+  background: linear-gradient(217deg,
+      #4A6FA5 0%,
+      /* azul halcón */
+      #0B0B0B 50%,
+      /* negro profundo */
+      #2E2E2E 100%
+      /* gris oscuro moderno */
+    );
   display: flex;
   align-items: center;
   justify-content: center;

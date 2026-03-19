@@ -6,17 +6,27 @@
   color: rgb(255, 255, 255);
 }
 
-body {
+/* body {
   background-color: #111;
   color: #fff;
   background: linear-gradient(217deg,
       #8b0000 0%,
-      /* rojo oscuro */
+      rojo oscuro
       #0b0b0b 50%,
-      /* negro profundo */
+      negro profundo
       #1f1f1f 100%
-      /* gris acero */
+      gris acero
     );
+} */
+body {
+  background-color: #111;
+  color: #fff;
+  background: linear-gradient(217deg,
+      #4A6FA5 0%,
+      #0B0B0B 55%,
+      #2E2E2E 90%,
+      #F2C94C 120%
+  );
 }
 
 .containerr {
@@ -34,7 +44,7 @@ body {
   display: flex;
   flex-direction: column;
   /* justify-content: space-between; */
-  border-right: 2px solid #ff0101;
+  border-right: 2px solid #F2C94C;
   align-content: center;
 }
 
@@ -68,8 +78,8 @@ body {
 }
 
 .sidebar a.active {
-    color: #ff4d4d !important;
-    font-weight: 600;
+  color: #ff4d4d !important;
+  font-weight: 600;
 }
 
 

@@ -5,13 +5,11 @@ body {
 
 body {
   background: linear-gradient(217deg,
-      #8b0000 0%,
-      /* rojo oscuro */
-      #0b0b0b 50%,
-      /* negro profundo */
-      #1f1f1f 100%
-      /* gris acero */
-    );
+      #4A6FA5 0%,
+      #0B0B0B 55%,
+      #2E2E2E 90%,
+      #F2C94C 120%
+  );
   display: flex;
   align-items: center;
   padding-top: 40px;

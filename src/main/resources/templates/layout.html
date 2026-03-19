@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="es-AR" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    th:with="gymLogo='/img/halcongympng.png'">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${titulo}"></title>
 
-    <link rel="icon" type="image/png" th:href="@{/img/captain-gym.png}">
+    <link rel="icon" type="image/png" th:src="@{${gymLogo}}">
 
     <!-- Mis estilos -->
     <link rel="stylesheet" href="/css/style.css">
@@ -30,7 +31,7 @@
         <div class="overlay" id="overlay"></div>
         <aside class="sidebar">
             <div class="logo">
-                <img src="/img/captain-gym.png" alt="captain-gym">
+                <img th:src="@{${gymLogo}}" alt="halcongym">
             </div>
             <nav>
                 <ul>
