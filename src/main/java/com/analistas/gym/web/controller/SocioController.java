@@ -24,7 +24,6 @@ import com.analistas.gym.model.domain.TipoMovimiento;
 import com.analistas.gym.model.service.IActividadService;
 import com.analistas.gym.model.service.ISocioService;
 import com.analistas.gym.model.service.MovimientoCajaService;
-import com.analistas.gym.model.service.ReciboPdfService;
 import com.analistas.gym.model.service.WhatsAppService;
 
 import jakarta.validation.Valid;
@@ -39,8 +38,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 @SessionAttributes("socioRegistro")
 public class SocioController {
 
-    @Autowired
-    ReciboPdfService reciboPdfService;
+    // @Autowired
+    // ReciboPdfService reciboPdfService;
 
     @Autowired
     WhatsAppService whatsappService;
