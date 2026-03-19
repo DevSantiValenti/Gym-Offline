@@ -5,11 +5,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -294,6 +296,42 @@ public class SocioController {
         redirectAttributes.addFlashAttribute("mensaje", "Socio eliminado correctamente.");
 
         return "redirect:/socios/listadoAdmin";
+    }
+
+    @GetMapping("/eliminados")
+    @Secured({ "ROLE_ADMIN" })
+    public String sociosEliminados(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta,
+            Model model) {
+
+        List<Socio> socios;
+
+        if (desde != null && hasta != null) {
+            socios = socioService.listarEliminadosPorFecha(desde, hasta);
+        } else {
+            socios = socioService.listarEliminados();
+        }
+
+        model.addAttribute("titulo", "Socios Eliminados");
+        model.addAttribute("socios", socios);
+        model.addAttribute("desde", desde);
+        model.addAttribute("hasta", hasta);
+
+        return "socios/socios-eliminados";
+    }
+
+    @GetMapping("/restaurar/{id}")
+    @Secured({ "ROLE_ADMIN" })
+    public String restaurarSocio(@PathVariable Long id,
+            RedirectAttributes redirectAttributes) {
+
+        socioService.restaurarSocio(id);
+
+        redirectAttributes.addFlashAttribute("mensaje",
+                "Socio restaurado correctamente.");
+
+        return "redirect:/socios/eliminados";
     }
 
     // Editar Información del Socio...

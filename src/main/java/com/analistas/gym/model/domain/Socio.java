@@ -49,10 +49,14 @@ public class Socio {
     private LocalDate fechaVencimiento;
 
     private Integer vecesIngresado;
-    
+
     private Integer saldoPendiente;
 
     private Boolean cuotaPaga;
+
+    private Boolean eliminado = false;
+
+    private LocalDateTime fechaEliminacion;
 
     @ManyToOne
     @JoinColumn(name = "actividad_id") // Foreign key hacia ACTIVIDAD

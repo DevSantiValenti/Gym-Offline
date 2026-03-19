@@ -37,6 +37,8 @@
                 <ul>
                     <li><a th:href="@{/home}">🏠 Acceso</a></li>
                     <li><a th:href="@{/socios/listadoAdmin}">👥 Socios</a></li>
+                    <li sec:authorize="${hasRole('ADMIN')}"> <a th:href="@{/socios/eliminados}">🗑️ Eliminados</a>
+                    </li>
                     <li><a th:href="@{/actividades/listadoAdmin}">🏋️‍♂️ Actividades</a></li>
                     <li><a th:href="@{/caja}">💼 Caja</a></li>
                     <li><a th:href="@{/gastos}">🧾 Gastos</a></li>
@@ -87,6 +89,7 @@
 
     <!-- Mis JS -->
     <script th:src="@{/js/confirmacionEliminar.js}"></script>
+    <script th:src="@{/js/confirmacionRestaurar.js}"></script>
     <script>
         const menuBtn = document.getElementById("menuToggle");
         const sidebar = document.querySelector(".sidebar");
