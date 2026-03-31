@@ -28,4 +28,6 @@ public interface ISocioService  {
     List<Socio> listarEliminados();
 
     List<Socio> listarEliminadosPorFecha(LocalDate desde, LocalDate hasta);
+
+    public List<Socio> obtenerIngresosPorFecha(LocalDate fecha);
 }

@@ -42,31 +42,37 @@ public class WebSecurityConfig {
 
     @Bean
 	public UserDetailsService userDetailsService() {
-	    		UserDetails administrador = User.withDefaultPasswordEncoder()
-				.username("Administrador")
-				.password("administrador")
+	    		UserDetails carlosFrete = User.withDefaultPasswordEncoder()
+				.username("Carlos Fretes")
+				.password("halcongym2026")
 				.roles("ADMIN")
 				.build();
 
-                UserDetails usuario = User.withDefaultPasswordEncoder()
-				.username("Usuario")
-				.password("usuario")
+                UserDetails general = User.withDefaultPasswordEncoder()
+				.username("HALCONGYM")
+				.password("12345678")
 				.roles("USER")
 				.build();
 
-				UserDetails administrador2 = User.withDefaultPasswordEncoder()
-				.username("Administrador2")
-				.password("administrador2")
+				UserDetails lucianoFrete = User.withDefaultPasswordEncoder()
+				.username("Luciano Fretes")
+				.password("halcongym2026")
 				.roles("ADMIN")
 				.build();
 
-				UserDetails usuario2 = User.withDefaultPasswordEncoder()
-				.username("Usuario2")
-				.password("usuario2")
-				.roles("USER")
-				.build();
+				// UserDetails administrador2 = User.withDefaultPasswordEncoder()
+				// .username("Administrador2")
+				// .password("administrador2")
+				// .roles("ADMIN")
+				// .build();
 
-		return new InMemoryUserDetailsManager(administrador, usuario, administrador2, usuario2);
+				// UserDetails usuario2 = User.withDefaultPasswordEncoder()
+				// .username("Usuario2")
+				// .password("usuario2")
+				// .roles("USER")
+				// .build();
+
+		return new InMemoryUserDetailsManager(carlosFrete, general, lucianoFrete);
 	}
 
 }

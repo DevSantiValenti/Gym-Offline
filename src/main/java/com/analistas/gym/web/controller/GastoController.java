@@ -16,7 +16,7 @@ import com.analistas.gym.model.service.IGastoService;
 
 @Controller
 @RequestMapping("/gastos")
-@Secured({"ROLE_ADMIN"})
+// @Secured({"ROLE_ADMIN"})
 public class GastoController {
 
     @Autowired

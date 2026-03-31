@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo}"></title>
+    <link rel="stylesheet" href="/css/datatable-list.css">
+
+    <link rel="icon" type="image/png" th:src="@{${gymLogo}}">
+
+</head>
+
+<body>
+    <!-- Esta va a ser la parte que se debe reeemplazar en las demas páginas, el contenido -->
+    <div layout:fragment="contenido" class="list-container">
+
+        <h2>Ingresos del día</h2>
+
+        <!-- FILTRO -->
+        <form th:action="@{/ingresos/filtrar}" method="get" class="row g-2 mb-3">
+            <div class="col-8">
+                <input type="date" name="fecha" class="form-control" th:value="${fechaSeleccionada}">
+            </div>
+            <div class="col-4 d-grid">
+                <button class="btn btn-primary">Filtrar</button>
+            </div>
+        </form>
+
+        <!-- TABLA -->
+        <div class="table-wrapper">
+            <table id="tablaIngresos">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>DNI</th>
+                        <th>Ingreso</th>
+                        <th>Cuota</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="ingreso, iter : ${ingresos}">
+                        <td th:text="${iter.index + 1}"></td>
+                        <!-- <td th:text="${ingreso.socio.nombreCompleto}"></td>
+                        <td th:text="${ingreso.socio.dni}"></td>
+                        <td th:text="${#temporals.format(ingreso.fechaHora, 'HH:mm')}"></td> -->
+                        <td data-label="Nombre" th:text="${ingreso.socio.nombreCompleto}"></td>
+                        <td data-label="DNI" th:text="${ingreso.socio.dni}"></td>
+                        <td data-label="Ingreso" th:text="${#temporals.format(ingreso.fechaHora, 'HH:mm')}"></td>
+                        <td>
+                            <span th:if="${ingreso.socio.cuotaPaga}" class="estado-pagado">OK</span>
+                            <span th:unless="${ingreso.socio.cuotaPaga}" class="estado-pendiente">Debe</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Mis JS -->
+    <script th:fragment="js" th:src="@{/js/ingresos-list.js}"></script>
+</body>
+
+</html>

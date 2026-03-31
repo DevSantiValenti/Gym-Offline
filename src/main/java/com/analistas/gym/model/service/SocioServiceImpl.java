@@ -158,6 +158,11 @@ public class SocioServiceImpl implements ISocioService {
         }
 
     }
+
+    @Override
+    public List<Socio> obtenerIngresosPorFecha(LocalDate fecha) {
+        return socioRepository.findByFechaIngreso(fecha);
+    }
 }
 
 // Guardar el valor del último ingreso ANTES de modificar

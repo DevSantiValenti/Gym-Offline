@@ -1,6 +1,8 @@
 package com.analistas.gym.model.repository;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import com.analistas.gym.model.domain.Socio;
 
@@ -27,4 +29,7 @@ public interface ISocioRepository extends CrudRepository<Socio, Long> {
     List<Socio> findByEliminadoTrueAndFechaEliminacionBetween(
             LocalDateTime desde,
             LocalDateTime hasta);
+
+    @Query("SELECT s FROM Socio s WHERE DATE(s.ultIngreso) = :fecha AND s.eliminado = false ORDER BY s.ultIngreso DESC")
+    List<Socio> findByFechaIngreso(@Param("fecha") LocalDate fecha);
 }

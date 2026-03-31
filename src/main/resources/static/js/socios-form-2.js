@@ -1,3 +1,5 @@
+
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const selectActividad = document.getElementById("actividad");
