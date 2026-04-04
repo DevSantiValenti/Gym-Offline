@@ -64,10 +64,18 @@
                         <td class="acciones text-center">
 
                             <button type="button" class="btn-restaurar"
-                                th:onclick="confirmarRestauracion('/socios/restaurar/' + [[${socio.id}]])">
+                                th:onclick="|confirmarRestauracion('/socios/restaurar/${socio.id}')|">
 
                                 <i class="bi bi-arrow-counterclockwise"></i>
                                 Restaurar
+
+                            </button>
+
+                            <button type="button" class="btn-eliminar"
+                                th:onclick="|confirmarEliminacionTotal('/socios/eliminarFisico/${socio.id}')|">
+
+                                <i class="bi bi-trash"></i>
+                                Eliminar
 
                             </button>
 
@@ -102,6 +110,12 @@
                 }
             });
         });
+
+        // function confirmarEliminacionFisica(url) {
+        //     if (confirm("⚠️ Esto eliminará el socio PERMANENTEMENTE. ¿Continuar?")) {
+        //         window.location.href = url;
+        //     }
+        // }
     </script>
 
 </body>

@@ -379,3 +379,33 @@ tr:hover {
 .btn-restaurar:active {
   transform: scale(0.96);
 }
+
+.btn-eliminar {
+  background: linear-gradient(135deg, #ff0000, #c90000);
+  border: none;
+  color: #ffffff;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.4);
+}
+
+/* hover */
+.btn-eliminar:hover {
+  transform: translateY(-1px) scale(1.05);
+  box-shadow:
+    0 0 10px #ff0000,
+    0 0 20px #ff0000,
+    0 0 30px rgba(255, 0, 0, 0.6);
+}
+
+/* active */
+.btn-eliminar:active {
+  transform: scale(0.96);
+}

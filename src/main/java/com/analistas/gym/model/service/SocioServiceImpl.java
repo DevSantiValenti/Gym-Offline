@@ -14,9 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.analistas.gym.model.domain.Socio;
 import com.analistas.gym.model.repository.ISocioRepository;
+import com.analistas.gym.model.repository.IingresoRepository;
 
 @Service
 public class SocioServiceImpl implements ISocioService {
+
+    @Autowired
+    IingresoRepository iingresoRepository;
 
     @Autowired
     ISocioRepository socioRepository;
@@ -39,7 +43,10 @@ public class SocioServiceImpl implements ISocioService {
     @Transactional
     @Override
     public Optional<Socio> actualizarVecesIngresado(String dni) {
-        Optional<Socio> socioOpt = socioRepository.findByDni(dni);
+
+        // Optional<Socio> socioOpt = socioRepository.findByDni(dni);
+        Optional<Socio> socioOpt = socioRepository.findByDniAndEliminadoFalse(dni);
+
         if (socioOpt.isPresent()) {
 
             Socio socio = socioOpt.get();
@@ -95,7 +102,8 @@ public class SocioServiceImpl implements ISocioService {
 
     @Override
     public Socio buscarPorDNI(String dni) {
-        return socioRepository.findByDni(dni).orElse(null);
+        // return socioRepository.findByDni(dni).orElse(null);
+        return socioRepository.findByDniAndEliminadoFalse(dni).orElse(null);
     }
 
     @Override
@@ -162,6 +170,22 @@ public class SocioServiceImpl implements ISocioService {
     @Override
     public List<Socio> obtenerIngresosPorFecha(LocalDate fecha) {
         return socioRepository.findByFechaIngreso(fecha);
+    }
+
+    @Override
+    public Socio buscarEliminadoPorDNI(String dni) {
+        return socioRepository.findByDniAndEliminadoTrue(dni).orElse(null);
+    }
+
+    @Transactional
+    @Override
+    public void eliminarFisico(Long id) {
+
+        // 1. borrar ingresos relacionados
+        iingresoRepository.deleteBySocioId(id);
+
+        // 2. borrar socio
+        socioRepository.deleteById(id);
     }
 }
 

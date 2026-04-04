@@ -32,4 +32,8 @@ public interface ISocioRepository extends CrudRepository<Socio, Long> {
 
     @Query("SELECT s FROM Socio s WHERE DATE(s.ultIngreso) = :fecha AND s.eliminado = false ORDER BY s.ultIngreso DESC")
     List<Socio> findByFechaIngreso(@Param("fecha") LocalDate fecha);
+
+    public Optional<Socio> findByDniAndEliminadoFalse(String dni);
+
+    public Optional<Socio> findByDniAndEliminadoTrue(String dni);
 }

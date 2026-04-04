@@ -12,10 +12,27 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
         if (dni === '') return;
 
         fetch(`/api/socios/dni?dni=${encodeURIComponent(dni)}`)
-            .then(response => {
-                // console.log("Respuesta cruda:", response);
-                if (!response.ok) throw new Error('Socio no encontrado');
-                return response.json();
+            // .then(response => {
+            //     // console.log("Respuesta cruda:", response);
+            //     if (!response.ok) throw new Error('Socio no encontrado');
+            //     return response.json();
+            // })
+            .then(async response => {
+                if (response.ok) {
+                    return response.json();
+                }
+
+                const errorText = await response.text();
+
+                if (response.status === 410) {
+                    throw new Error('SOCIO_ELIMINADO');
+                }
+
+                if (response.status === 404) {
+                    throw new Error('SOCIO_NO_ENCONTRADO');
+                }
+
+                throw new Error('ERROR_DESCONOCIDO');
             })
             .then(socio => {
 
@@ -78,7 +95,7 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
                     estadoDiv.innerHTML = '<h3>CUOTA VENCIDA</h3>';
                     estadoDiv.className = 'estado cuota-vencida';
 
-                     // Sonido cuota vencida
+                    // Sonido cuota vencida
                     sonidoVencida.currentTime = 0;
                     sonidoVencida.play();
 
@@ -96,7 +113,7 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
                     estadoDiv.innerHTML =
                         `<h3>LA CUOTA VENCE EN ${diasRestantes} DÍA${diasRestantes === 1 ? '' : 'S'}</h3>`;
                     estadoDiv.className = 'estado cuota-proximo';
-                     //  Sonido cuota proxima a vencer
+                    //  Sonido cuota proxima a vencer
                     sonidoOk.currentTime = 0;
                     sonidoOk.play();
 
@@ -137,8 +154,25 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
                     input.focus();
                 }, 10000);
             })
-            .catch(() => {
-                document.getElementById('alertas').innerHTML = '<div class="error">❌ Socio no encontrado</div>';
+            // .catch(() => {
+            //     document.getElementById('alertas').innerHTML = '<div class="error">❌ Socio no encontrado</div>';
+            //     document.getElementById('tarjeta').style.display = 'none';
+            //     document.getElementById('estado').style.display = 'none';
+            //     document.getElementById('busqueda').focus();
+            // });
+            .catch((error) => {
+
+                let mensaje = '';
+
+                if (error.message === 'SOCIO_ELIMINADO') {
+                    mensaje = '⚠️ El socio existe pero está eliminado';
+                } else if (error.message === 'SOCIO_NO_ENCONTRADO') {
+                    mensaje = '❌ Socio no registrado';
+                } else {
+                    mensaje = '❌ Error inesperado';
+                }
+
+                document.getElementById('alertas').innerHTML = `<div class="error">${mensaje}</div>`;
                 document.getElementById('tarjeta').style.display = 'none';
                 document.getElementById('estado').style.display = 'none';
                 document.getElementById('busqueda').focus();

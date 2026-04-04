@@ -30,4 +30,8 @@ public interface ISocioService  {
     List<Socio> listarEliminadosPorFecha(LocalDate desde, LocalDate hasta);
 
     public List<Socio> obtenerIngresosPorFecha(LocalDate fecha);
+
+    public Socio buscarEliminadoPorDNI(String dni);
+
+    public void eliminarFisico(Long id);
 }

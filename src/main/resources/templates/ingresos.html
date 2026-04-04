@@ -43,14 +43,14 @@
 
                 <tbody>
                     <tr th:each="ingreso, iter : ${ingresos}">
-                        <td th:text="${iter.index + 1}"></td>
+                        <td data-label="ID" th:text="${iter.index + 1}"></td>
                         <!-- <td th:text="${ingreso.socio.nombreCompleto}"></td>
                         <td th:text="${ingreso.socio.dni}"></td>
                         <td th:text="${#temporals.format(ingreso.fechaHora, 'HH:mm')}"></td> -->
                         <td data-label="Nombre" th:text="${ingreso.socio.nombreCompleto}"></td>
                         <td data-label="DNI" th:text="${ingreso.socio.dni}"></td>
                         <td data-label="Ingreso" th:text="${#temporals.format(ingreso.fechaHora, 'HH:mm')}"></td>
-                        <td>
+                        <td data-label="Estado Cuota">
                             <span th:if="${ingreso.socio.cuotaPaga}" class="estado-pagado">OK</span>
                             <span th:unless="${ingreso.socio.cuotaPaga}" class="estado-pendiente">Debe</span>
                         </td>

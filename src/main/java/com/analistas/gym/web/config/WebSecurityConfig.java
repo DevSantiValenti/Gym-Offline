@@ -60,6 +60,12 @@ public class WebSecurityConfig {
 				.roles("ADMIN")
 				.build();
 
+				UserDetails superadmin = User.withDefaultPasswordEncoder()
+				.username("AdminSanti")
+				.password("chuflitos1")
+				.roles("ADMIN")
+				.build();
+
 				// UserDetails administrador2 = User.withDefaultPasswordEncoder()
 				// .username("Administrador2")
 				// .password("administrador2")
@@ -72,7 +78,7 @@ public class WebSecurityConfig {
 				// .roles("USER")
 				// .build();
 
-		return new InMemoryUserDetailsManager(carlosFrete, general, lucianoFrete);
+		return new InMemoryUserDetailsManager(carlosFrete, general, lucianoFrete, superadmin);
 	}
 
 }

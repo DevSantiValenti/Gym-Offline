@@ -98,7 +98,68 @@
     </div>
 
     <!-- Mis JS -->
-    <script th:fragment="js"></script>
+    <!-- <script th:fragment="js"></script> -->
+    <script th:fragment="js">
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const dniInput = document.getElementById("dni");
+
+            let timeout = null;
+
+            dniInput.addEventListener("keyup", function () {
+
+                clearTimeout(timeout);
+
+                const dni = this.value.trim();
+
+                if (dni.length < 5) return;
+
+                timeout = setTimeout(() => {
+
+                    fetch(`/socios/api/validar-dni?dni=${dni}`)
+                        .then(res => res.text())
+                        .then(data => {
+
+                            if (data === "EXISTE_ACTIVO") {
+
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'DNI ya registrado',
+                                    text: 'Este socio ya existe en el sistema  DNI: ' + dni,
+                                    confirmButtonText: 'OK'
+                                });
+
+                                dniInput.value = '';
+                                dniInput.focus();
+                            }
+
+                            if (data === "EXISTE_ELIMINADO") {
+
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Socio eliminado',
+                                    text: 'Este DNI (' + dni + ') pertenece a un socio eliminado. Podés restaurarlo y editar los datos si es necesario.',
+                                    confirmButtonText: 'OK'
+                                });
+
+                                dniInput.value = '';
+                                dniInput.focus();
+                            }
+
+                        });
+
+                }, 500); // debounce
+
+            });
+
+            document.querySelector("form").addEventListener("submit", function (e) {
+                if (dniInput.value === '') {
+                    e.preventDefault();
+                }
+            });
+
+        });
+    </script>
 </body>
 
 </html>

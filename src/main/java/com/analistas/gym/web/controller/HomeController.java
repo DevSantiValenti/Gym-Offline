@@ -27,23 +27,49 @@ public class HomeController {
         return "index";
     }
 
+    // @GetMapping("/api/socios/dni")
+    // @ResponseBody
+    // public ResponseEntity<Socio> buscarSocioPorDni(@RequestParam String dni) {
+
+    // Optional<Socio> socioOpt = socioService.actualizarVecesIngresado(dni.trim());
+    // // socio.set
+    // if (socioOpt.isPresent()) {
+
+    // Socio socio = socioOpt.get();
+
+    // // 🔥 REGISTRAR INGRESO
+    // ingresoService.registrarIngreso(socio);
+
+    // return ResponseEntity.ok(socio);
+    // }
+    // return socioOpt.map(ResponseEntity::ok).orElseGet(() ->
+    // ResponseEntity.notFound().build());
+
+    // }
     @GetMapping("/api/socios/dni")
     @ResponseBody
-    public ResponseEntity<Socio> buscarSocioPorDni(@RequestParam String dni) {
+    public ResponseEntity<?> buscarSocioPorDni(@RequestParam String dni) {
 
         Optional<Socio> socioOpt = socioService.actualizarVecesIngresado(dni.trim());
-        // socio.set
+
         if (socioOpt.isPresent()) {
 
             Socio socio = socioOpt.get();
 
-            // 🔥 REGISTRAR INGRESO
             ingresoService.registrarIngreso(socio);
 
             return ResponseEntity.ok(socio);
         }
-        return socioOpt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 
+        // 🔥 NUEVO: verificar si existe eliminado
+        Socio socioEliminado = socioService.buscarEliminadoPorDNI(dni.trim());
+
+        if (socioEliminado != null) {
+            return ResponseEntity.status(410).body("SOCIO_ELIMINADO");
+        }
+
+        // 🔥 NO EXISTE
+        return ResponseEntity.status(404).body("SOCIO_NO_ENCONTRADO");
     }
 
 }

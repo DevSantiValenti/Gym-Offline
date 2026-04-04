@@ -6,12 +6,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -143,33 +145,43 @@ public class SocioController {
         Integer cuota = actividad.getMonto();
 
         // 1) Ver si el socio YA EXISTE (por DNI)
-        Socio socioExistente = null;
+        // Socio socioExistente = null;
+
+        // if (dto.getDni() != null && !dto.getDni().isBlank()) {
+        // socioExistente = socioService.buscarPorDNI(dto.getDni());
+        // }
+        Socio socioActivo = null;
+        Socio socioEliminado = null;
 
         if (dto.getDni() != null && !dto.getDni().isBlank()) {
-            socioExistente = socioService.buscarPorDNI(dto.getDni());
+            socioActivo = socioService.buscarPorDNI(dto.getDni()); // ahora solo trae activos
+
+            // NUEVO: buscar también eliminados
+            socioEliminado = socioService.buscarEliminadoPorDNI(dto.getDni());
         }
 
         // 2) SI EXISTE → SOLO ACTUALIZA CUOTA
-        if (socioExistente != null) {
+        // 1. Si existe ACTIVO → actualizar
+        if (socioActivo != null) {
 
             // Calcular nuevo saldo pendiente acumulando el saldo anterior
             Integer pago = dto.getMonto() != null ? dto.getMonto() : 0;
-            Integer saldoAnterior = socioExistente.getSaldoPendiente() != null ? socioExistente.getSaldoPendiente() : 0;
+            Integer saldoAnterior = socioActivo.getSaldoPendiente() != null ? socioActivo.getSaldoPendiente() : 0;
             int nuevoSaldo = saldoAnterior + (cuota - pago);
 
-            socioExistente.setActividad(actividad);
-            socioExistente.setSaldoPendiente(nuevoSaldo);
+            socioActivo.setActividad(actividad);
+            socioActivo.setSaldoPendiente(nuevoSaldo);
             // socioExistente.setFechaVencimiento(LocalDate.now().plusMonths(1));
             // socioExistente.setFechaAlta(dto.getFechaAlta());
-            socioExistente.setFechaVencimiento(dto.getFechaVencimiento());
-            socioExistente.setCuotaPaga(true);
+            socioActivo.setFechaVencimiento(dto.getFechaVencimiento());
+            socioActivo.setCuotaPaga(true);
 
-            socioService.guardar(socioExistente);
+            socioService.guardar(socioActivo);
 
             // 👉 REGISTRO EN CAJA
             MovimientoCaja movimiento = new MovimientoCaja();
             movimiento.setActividad(actividad.getNombre());
-            movimiento.setSocioNombreCompleto(socioExistente.getNombreCompleto());
+            movimiento.setSocioNombreCompleto(socioActivo.getNombreCompleto());
             movimiento.setDetalle("Pago de cuota");
             movimiento.setFormaPago(dto.getFormaPago()); // EFECTIVO / TRANSFERENCIA
             movimiento.setMonto(dto.getMonto());
@@ -180,18 +192,26 @@ public class SocioController {
             redirectAttributes.addFlashAttribute("mensaje", "Cuota abonada con éxito.");
 
             // Justo antes del return final, generamos la URL
-            // byte[] pdf = reciboPdfService.generarReciboPdf(socioExistente, dto.getMonto());
+            // byte[] pdf = reciboPdfService.generarReciboPdf(socioExistente,
+            // dto.getMonto());
 
             // try {
-            //     whatsappService.enviarReciboPdf(
-            //             socioExistente,
-            //             pdf,
-            //             "recibo-captain-gym.pdf");
+            // whatsappService.enviarReciboPdf(
+            // socioExistente,
+            // pdf,
+            // "recibo-captain-gym.pdf");
             // } catch (Exception e) {
-            //     System.out.println("⚠ Error enviando WhatsApp: " + e.getMessage());
+            // System.out.println("⚠ Error enviando WhatsApp: " + e.getMessage());
             // }
 
             return "redirect:/home";
+        }
+
+        // 2. Si existe ELIMINADO → bloquear
+        if (socioEliminado != null) {
+            redirectAttributes.addFlashAttribute("error",
+                    "El socio existe pero está eliminado. Debes restaurarlo.");
+            return "redirect:/socios/listadoAdmin";
         }
 
         // -------------------------------------------------------------
@@ -231,12 +251,12 @@ public class SocioController {
         socioService.guardar(socio);
 
         // try {
-        //     whatsappService.enviarReciboPdf(
-        //             socio,
-        //             pdf,
-        //             "recibo-captain-gym.pdf");
+        // whatsappService.enviarReciboPdf(
+        // socio,
+        // pdf,
+        // "recibo-captain-gym.pdf");
         // } catch (Exception e) {
-        //     System.out.println("⚠ Error enviando WhatsApp: " + e.getMessage());
+        // System.out.println("⚠ Error enviando WhatsApp: " + e.getMessage());
         // }
 
         // 👉 REGISTRO EN CAJA (INSCRIPCIÓN)
@@ -344,4 +364,35 @@ public class SocioController {
         return "socios/socios-form";
     }
 
+    @GetMapping("/eliminarFisico/{id}")
+    @Secured({ "ROLE_ADMIN" })
+    public String eliminarFisico(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
+        try {
+            socioService.eliminarFisico(id);
+            redirectAttributes.addFlashAttribute("mensaje", "Socio eliminado definitivamente.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/socios/eliminados";
+    }
+
+    @GetMapping("/api/validar-dni")
+    @ResponseBody
+    public ResponseEntity<?> validarDni(@RequestParam String dni) {
+
+        Socio activo = socioService.buscarPorDNI(dni);
+        Socio eliminado = socioService.buscarEliminadoPorDNI(dni);
+
+        if (activo != null) {
+            return ResponseEntity.ok("EXISTE_ACTIVO");
+        }
+
+        if (eliminado != null) {
+            return ResponseEntity.ok("EXISTE_ELIMINADO");
+        }
+
+        return ResponseEntity.ok("NO_EXISTE");
+    }
 }
