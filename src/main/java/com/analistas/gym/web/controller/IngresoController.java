@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -50,5 +51,15 @@ public class IngresoController {
         model.addAttribute("titulo", "Ingresos filtrados");
 
         return "ingresos";
+    }
+
+    @GetMapping("/eliminar/{id}")
+    public String eliminarIngreso(@PathVariable Long id, 
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
+        ingresoService.eliminarIngreso(id);
+        if (fecha != null) {
+            return "redirect:/ingresos/filtrar?fecha=" + fecha;
+        }
+        return "redirect:/ingresos";
     }
 }

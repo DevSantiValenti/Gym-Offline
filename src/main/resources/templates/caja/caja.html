@@ -17,21 +17,21 @@
         <form method="get" class="row g-3 mb-4">
             <div class="col-md-3">
                 <label>Desde</label>
-                <input type="date" name="desde" class="form-control">
+                <input type="date" name="desde" class="form-control" th:value="${desde}">
             </div>
 
             <div class="col-md-3">
                 <label>Hasta</label>
-                <input type="date" name="hasta" class="form-control">
+                <input type="date" name="hasta" class="form-control" th:value="${hasta}">
             </div>
 
             <div class="col-md-3">
                 <label>Tipo de movimiento</label>
                 <select name="tipo" class="form-select">
-                    <option value="">Todos</option>
-                    <option value="CUOTA">Pago de cuota</option>
-                    <option value="INSCRIPCION">Pago de inscripción</option>
-                    <option value="DIARIO">Pago diario</option>
+                    <option value="" th:selected="${tipo == null || tipo.isBlank()}">Todos</option>
+                    <option value="CUOTA" th:selected="${tipo == 'CUOTA'}">Pago de cuota</option>
+                    <option value="INSCRIPCION" th:selected="${tipo == 'INSCRIPCION'}">Pago de inscripción</option>
+                    <option value="DIARIO" th:selected="${tipo == 'DIARIO'}">Pago diario</option>
                 </select>
                 </select>
             </div>
@@ -39,9 +39,9 @@
             <div class="col-md-3">
                 <label>Forma de pago</label>
                 <select name="formaPago" class="form-select">
-                    <option value="">Todo</option>
-                    <option value="EFECTIVO">Efectivo</option>
-                    <option value="TRANSFERENCIA">Transferencia</option>
+                    <option value="" th:selected="${formaPago == null || formaPago.isBlank()}">Todo</option>
+                    <option value="EFECTIVO" th:selected="${formaPago == 'EFECTIVO'}">Efectivo</option>
+                    <option value="TRANSFERENCIA" th:selected="${formaPago == 'TRANSFERENCIA'}">Transferencia</option>
                 </select>
             </div>
 
@@ -81,7 +81,7 @@
                         <td data-label="Acciones" class="acciones" sec:authorize="${hasRole('ADMIN')}">
                             <a sec:authorize="${hasRole('ADMIN')}" href="#"
                                 class="eliminar text-danger p-2 bg-dark rounded-3"
-                                th:onclick="confirmarEliminacion('/caja/eliminar/' + [[${m.id}]])">
+                                th:onclick="|confirmarEliminacion('@{/caja/eliminar/{id}(id=${m.id},desde=${desde},hasta=${hasta},tipo=${tipo},formaPago=${formaPago})}')|">
                                 Eliminar
                             </a>
                         </td>
@@ -93,7 +93,7 @@
 
         <!-- TOTAL -->
         <div class="text-end mt-4">
-            <h3>TOTAL: $<span th:text="${total}"></span></h3>
+            <h3>TOTAL: $<span th:text="${totalFormateado}"></span></h3>
         </div>
 
     </div>

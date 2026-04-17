@@ -35,4 +35,8 @@ public class IngresosServiceImpl implements IingresoService {
         return ingresoRepository.findByFecha(fecha);
     }
 
+    @Override
+    public void eliminarIngreso(Long id) {
+        ingresoRepository.deleteById(id);
+    }
 }

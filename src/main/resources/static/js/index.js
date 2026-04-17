@@ -152,7 +152,8 @@ document.getElementById('busqueda').addEventListener('keypress', function (e) {
                     const input = document.getElementById('busqueda');
                     input.value = '';
                     input.focus();
-                }, 10000);
+                }, 4000);
+                // Estaba en 10000
             })
             // .catch(() => {
             //     document.getElementById('alertas').innerHTML = '<div class="error">❌ Socio no encontrado</div>';

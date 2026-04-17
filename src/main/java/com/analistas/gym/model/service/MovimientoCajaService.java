@@ -80,13 +80,22 @@ public class MovimientoCajaService {
         repository.save(movimiento);
     }
 
+    public void guardar(MovimientoCaja movimiento, LocalDate fecha) {
+        if (fecha != null) {
+            movimiento.setFechaHora(fecha.atStartOfDay());
+        } else {
+            movimiento.setFechaHora(LocalDateTime.now());
+        }
+        repository.save(movimiento);
+    }
+
     public void eliminar(Long id) {
         repository.deleteById(id);
     }
 
-    public Double calcularTotal(List<MovimientoCaja> movimientos) {
+    public Long calcularTotal(List<MovimientoCaja> movimientos) {
         return movimientos.stream()
-                .mapToDouble(MovimientoCaja::getMonto)
+                .mapToLong(MovimientoCaja::getMonto)
                 .sum();
     }
 

@@ -11,4 +11,6 @@ public interface IingresoService {
     void registrarIngreso(Socio socio);
 
     List<Ingreso> obtenerIngresosPorFecha(LocalDate fecha);
+    
+    void eliminarIngreso(Long id);
 }

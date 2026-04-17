@@ -38,21 +38,26 @@
                         <th>DNI</th>
                         <th>Ingreso</th>
                         <th>Cuota</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     <tr th:each="ingreso, iter : ${ingresos}">
                         <td data-label="ID" th:text="${iter.index + 1}"></td>
-                        <!-- <td th:text="${ingreso.socio.nombreCompleto}"></td>
-                        <td th:text="${ingreso.socio.dni}"></td>
-                        <td th:text="${#temporals.format(ingreso.fechaHora, 'HH:mm')}"></td> -->
                         <td data-label="Nombre" th:text="${ingreso.socio.nombreCompleto}"></td>
                         <td data-label="DNI" th:text="${ingreso.socio.dni}"></td>
                         <td data-label="Ingreso" th:text="${#temporals.format(ingreso.fechaHora, 'HH:mm')}"></td>
                         <td data-label="Estado Cuota">
                             <span th:if="${ingreso.socio.cuotaPaga}" class="estado-pagado">OK</span>
                             <span th:unless="${ingreso.socio.cuotaPaga}" class="estado-pendiente">Debe</span>
+                        </td>
+                        <td data-label="Acciones" class="acciones">
+                            <a href="#"
+                                class="eliminar text-danger p-2 bg-dark rounded-3"
+                                th:onclick="|confirmarEliminacion('@{/ingresos/eliminar/{id}(id=${ingreso.id},fecha=${#temporals.format(fechaSeleccionada, 'yyyy-MM-dd')})}')|">
+                                Eliminar
+                            </a>
                         </td>
                     </tr>
                 </tbody>
@@ -62,6 +67,7 @@
     </div>
 
     <!-- Mis JS -->
+    <script th:fragment="js" th:src="@{/js/confirmacionEliminar.js}"></script>
     <script th:fragment="js" th:src="@{/js/ingresos-list.js}"></script>
 </body>
 

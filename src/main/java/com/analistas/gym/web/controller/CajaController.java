@@ -2,6 +2,8 @@ package com.analistas.gym.web.controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
+import java.text.NumberFormat;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -55,8 +57,16 @@ public class CajaController {
                 tipoMovimiento,
                 formaPago != null && !formaPago.isBlank() ? formaPago : null);
 
+        Long total = movimientoCajaService.calcularTotal(movimientos);
+        NumberFormat formatoMoneda = NumberFormat.getIntegerInstance(new Locale("es", "AR"));
+
         model.addAttribute("movimientos", movimientos);
-        model.addAttribute("total", movimientoCajaService.calcularTotal(movimientos));
+        model.addAttribute("total", total);
+        model.addAttribute("totalFormateado", formatoMoneda.format(total));
+        model.addAttribute("desde", desde);
+        model.addAttribute("hasta", hasta);
+        model.addAttribute("tipo", tipo);
+        model.addAttribute("formaPago", formaPago);
 
         return "caja/caja";
     }
@@ -68,9 +78,34 @@ public class CajaController {
 
     @GetMapping("/eliminar/{id}")
     @Secured({ "ROLE_ADMIN" })
-    public String eliminarMovimiento(@PathVariable Long id) {
+    public String eliminarMovimiento(
+            @PathVariable Long id,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta,
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) String formaPago) {
         movimientoCajaService.eliminar(id);
-        return "redirect:/caja";
+
+        StringBuilder redirectUrl = new StringBuilder("redirect:/caja");
+        boolean tieneFiltros = false;
+
+        if (desde != null) {
+            redirectUrl.append(tieneFiltros ? "&" : "?").append("desde=").append(desde);
+            tieneFiltros = true;
+        }
+        if (hasta != null) {
+            redirectUrl.append(tieneFiltros ? "&" : "?").append("hasta=").append(hasta);
+            tieneFiltros = true;
+        }
+        if (tipo != null && !tipo.isBlank()) {
+            redirectUrl.append(tieneFiltros ? "&" : "?").append("tipo=").append(tipo);
+            tieneFiltros = true;
+        }
+        if (formaPago != null && !formaPago.isBlank()) {
+            redirectUrl.append(tieneFiltros ? "&" : "?").append("formaPago=").append(formaPago);
+        }
+
+        return redirectUrl.toString();
     }
 
     @PostMapping("/pago-diario")

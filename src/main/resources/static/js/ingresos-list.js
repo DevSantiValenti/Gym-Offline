@@ -12,8 +12,8 @@ $(document).ready(() => {
             // {orderable: false},
             null,
             // { bSearchable: false, orderable: false },
-            null
-            // { bSearchable: false, orderable: false }
+            null,
+            { bSearchable: false, orderable: false }
             // {bSearchable: false},
             // {orderable: false},
         ],

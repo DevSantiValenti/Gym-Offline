@@ -187,7 +187,7 @@ public class SocioController {
             movimiento.setMonto(dto.getMonto());
             movimiento.setTipoMovimiento(TipoMovimiento.CUOTA);
 
-            cajaService.guardar(movimiento);
+            cajaService.guardar(movimiento, dto.getFechaAlta());
 
             redirectAttributes.addFlashAttribute("mensaje", "Cuota abonada con éxito.");
 
@@ -268,7 +268,7 @@ public class SocioController {
         movimiento.setMonto(dto.getMonto());
         movimiento.setTipoMovimiento(TipoMovimiento.INSCRIPCION);
 
-        cajaService.guardar(movimiento);
+        cajaService.guardar(movimiento, dto.getFechaAlta());
 
         sessionStatus.setComplete();
         redirectAttributes.addFlashAttribute("mensaje", "Socio registrado con éxito!");
