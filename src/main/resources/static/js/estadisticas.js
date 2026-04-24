@@ -244,6 +244,45 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     /* =========================
+       CHART PAGOS DE CUOTA
+       ========================= */
+    if (window.cuotas && document.getElementById("cuotasChart")) {
+        new Chart(document.getElementById("cuotasChart"), {
+            type: 'bar',
+            data: {
+                labels: etiquetas,
+                datasets: [{
+                    label: 'Pago de cuota',
+                    data: window.cuotas,
+                    backgroundColor: '#4e79ff',
+                    borderColor: '#2f56d6',
+                    borderWidth: 1,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Pagos de cuota por mes'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    /* =========================
        CHART INSCRIPCIONES
        ========================= */
     if (window.inscripciones && document.getElementById("inscripcionesChart")) {

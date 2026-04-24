@@ -36,6 +36,10 @@
                 /* 🔥 MÁS ALTO */
             }
 
+            .movimientos-chart {
+                height: 360px;
+            }
+
             .inscripciones-chart {
                 height: 360px;
             }
@@ -87,6 +91,10 @@
             <canvas id="barChart"></canvas>
         </div>
 
+        <div class="table-wrapper chart-container movimientos-chart" style="margin-top:24px;">
+            <canvas id="cuotasChart"></canvas>
+        </div>
+
         <!-- Chart de las inscripciones en el año, por mes -->
         <div class="table-wrapper chart-container inscripciones-chart" style="margin-top:24px;">
             <canvas id="inscripcionesChart"></canvas>
@@ -107,6 +115,7 @@
             /*<![CDATA[*/
             window.labels = /*[[${meses}]]*/[];
             window.dataValues = /*[[${totales}]]*/[];
+            window.cuotas = /*[[${cuotasCounts}]]*/[];
             window.inscripciones = /*[[${inscripcionesCounts}]]*/[];
             window.gastos = /*[[${gastos}]]*/[];
             /*]]>*/

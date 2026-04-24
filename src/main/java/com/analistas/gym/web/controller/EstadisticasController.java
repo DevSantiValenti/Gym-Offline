@@ -59,6 +59,7 @@ public class EstadisticasController {
 
                 // Canva de inscripciones por mes:
                 List<Integer> totalesIns = cajaService.obtenerTotalesPorMesYAnio(anio);
+                List<Integer> cuotasCounts = cajaService.obtenerCuotasPorMesYAnio(anio);
                 List<Integer> inscripcionesCounts = cajaService.obtenerInscripcionesPorMesYAnio(anio);
 
                 List<Integer> gastosMensuales = gastoService.obtenerTotalesPorMes(anio);
@@ -66,6 +67,7 @@ public class EstadisticasController {
 
                 model.addAttribute("meses", meses);
                 model.addAttribute("totales", totalesIns);
+                model.addAttribute("cuotasCounts", cuotasCounts);
                 model.addAttribute("inscripcionesCounts", inscripcionesCounts);
                 model.addAttribute("totalAnual", totalAnual);
 

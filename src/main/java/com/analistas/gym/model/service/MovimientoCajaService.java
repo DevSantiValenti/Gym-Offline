@@ -130,4 +130,31 @@ public class MovimientoCajaService {
         return conteos;
     }
 
+    public List<Integer> obtenerCuotasPorMesYAnio(int anio) {
+        List<Integer> conteos = new ArrayList<>(Collections.nCopies(12, 0));
+
+        LocalDateTime inicio = LocalDate.of(anio, 1, 1).atStartOfDay();
+        LocalDateTime fin = LocalDate.of(anio, 12, 31).atTime(23, 59, 59);
+
+        List<MovimientoCaja> movimientos = repository.findByFechaHoraBetween(inicio, fin);
+
+        for (MovimientoCaja movimiento : movimientos) {
+            if (movimiento.getFechaHora() == null) {
+                continue;
+            }
+
+            boolean esPagoDeCuota = movimiento.getTipoMovimiento() == TipoMovimiento.CUOTA
+                    || "Pago de cuota".equalsIgnoreCase(movimiento.getDetalle());
+
+            if (!esPagoDeCuota) {
+                continue;
+            }
+
+            int mes = movimiento.getFechaHora().getMonthValue() - 1;
+            conteos.set(mes, conteos.get(mes) + 1);
+        }
+
+        return conteos;
+    }
+
 }
