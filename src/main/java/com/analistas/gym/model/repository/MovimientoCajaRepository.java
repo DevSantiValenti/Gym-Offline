@@ -2,6 +2,7 @@ package com.analistas.gym.model.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -31,6 +32,14 @@ public interface MovimientoCajaRepository extends JpaRepository<MovimientoCaja, 
                         LocalDateTime hasta,
                         TipoMovimiento tipoMovimiento,
                         String formaPago);
+
+        Optional<MovimientoCaja> findFirstBySocioIdAndTipoMovimientoAndDetalleAndMontoAndFechaHoraBetweenOrderByFechaHoraDesc(
+                        Long socioId,
+                        TipoMovimiento tipoMovimiento,
+                        String detalle,
+                        Integer monto,
+                        LocalDateTime desde,
+                        LocalDateTime hasta);
 
         @Query("""
                             SELECT MONTH(m.fechaHora), SUM(m.monto)

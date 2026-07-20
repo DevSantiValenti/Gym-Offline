@@ -1,6 +1,7 @@
 package com.analistas.gym.web.controller;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Locale;
 import java.text.NumberFormat;
@@ -25,6 +26,8 @@ import com.analistas.gym.model.service.MovimientoCajaService;
 @RequestMapping("/caja")
 public class CajaController {
 
+    private static final ZoneId ZONA_BUENOS_AIRES = ZoneId.of("America/Argentina/Buenos_Aires");
+
     @Autowired
     private MovimientoCajaService movimientoCajaService;
 
@@ -45,10 +48,10 @@ public class CajaController {
         }
 
         if (desde == null) {
-            desde = LocalDate.now();
+            desde = LocalDate.now(ZONA_BUENOS_AIRES);
         }
         if (hasta == null) {
-            hasta = LocalDate.now();
+            hasta = LocalDate.now(ZONA_BUENOS_AIRES);
         }
 
         List<MovimientoCaja> movimientos = movimientoCajaService.obtenerPorFiltros(

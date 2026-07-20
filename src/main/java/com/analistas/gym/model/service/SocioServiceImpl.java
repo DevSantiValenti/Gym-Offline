@@ -3,6 +3,7 @@ package com.analistas.gym.model.service;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.Locale;
@@ -18,6 +19,8 @@ import com.analistas.gym.model.repository.IingresoRepository;
 
 @Service
 public class SocioServiceImpl implements ISocioService {
+
+    private static final ZoneId ZONA_BUENOS_AIRES = ZoneId.of("America/Argentina/Buenos_Aires");
 
     @Autowired
     IingresoRepository iingresoRepository;
@@ -53,8 +56,8 @@ public class SocioServiceImpl implements ISocioService {
 
             // Si la fecha de vencimiento ya pasó, marcar cuota como no pagada
             LocalDate fechaVto = socio.getFechaVencimiento();
-            if (fechaVto != null && (fechaVto.isEqual(LocalDate.now()) ||
-                    fechaVto.isBefore(LocalDate.now()))) {
+            LocalDate hoy = LocalDate.now(ZONA_BUENOS_AIRES);
+            if (fechaVto != null && !fechaVto.isAfter(hoy)) {
                 socio.setCuotaPaga(false);
             }
 
@@ -63,7 +66,7 @@ public class SocioServiceImpl implements ISocioService {
 
             // Actualizar datos en BD
             socio.setVecesIngresado(socio.getVecesIngresado() == null ? 1 : socio.getVecesIngresado() + 1);
-            socio.setUltIngreso(LocalDateTime.now());
+            socio.setUltIngreso(LocalDateTime.now(ZONA_BUENOS_AIRES));
             socioRepository.save(socio);
 
             return Optional.of(socio);
@@ -81,7 +84,7 @@ public class SocioServiceImpl implements ISocioService {
     public List<Socio> listarSociosActualizados() {
 
         List<Socio> socios = socioRepository.findByEliminadoFalse(); // ✅ SOLO ACTIVOS
-        LocalDate hoy = LocalDate.now();
+        LocalDate hoy = LocalDate.now(ZONA_BUENOS_AIRES);
 
         for (Socio socio : socios) {
             LocalDate fechaVto = socio.getFechaVencimiento();
@@ -111,7 +114,7 @@ public class SocioServiceImpl implements ISocioService {
         Socio socio = socioRepository.findById(id).orElse(null);
         if (socio != null) {
             socio.setEliminado(true);
-            socio.setFechaEliminacion(LocalDateTime.now());
+            socio.setFechaEliminacion(LocalDateTime.now(ZONA_BUENOS_AIRES));
             socioRepository.save(socio);
         }
     }
@@ -149,7 +152,7 @@ public class SocioServiceImpl implements ISocioService {
             return;
         }
 
-        LocalDate hoy = LocalDate.now();
+        LocalDate hoy = LocalDate.now(ZONA_BUENOS_AIRES);
         LocalDate ultimoIngreso = socio.getUltIngreso().toLocalDate();
 
         WeekFields weekFields = WeekFields.of(Locale.getDefault());

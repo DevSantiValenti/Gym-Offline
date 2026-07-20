@@ -2,6 +2,7 @@ package com.analistas.gym.web.controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequestMapping("/socios")
 @SessionAttributes("socioRegistro")
 public class SocioController {
+
+    private static final ZoneId ZONA_BUENOS_AIRES = ZoneId.of("America/Argentina/Buenos_Aires");
 
     // @Autowired
     // ReciboPdfService reciboPdfService;
@@ -124,8 +127,8 @@ public class SocioController {
 
         model.addAttribute("actividades", actividades);
 
-        model.addAttribute("fechaInicio", LocalDateTime.now());
-        model.addAttribute("fechaVencimiento", (LocalDate.now()).plusMonths(1));
+        model.addAttribute("fechaInicio", LocalDateTime.now(ZONA_BUENOS_AIRES));
+        model.addAttribute("fechaVencimiento", LocalDate.now(ZONA_BUENOS_AIRES).plusMonths(1));
         return "socios/socios-form-2.html"; // ← nombre de tu segunda plantilla
     }
 
@@ -182,13 +185,15 @@ public class SocioController {
             MovimientoCaja movimiento = new MovimientoCaja();
             movimiento.setActividad(actividad.getNombre());
             movimiento.setSocioNombreCompleto(socioActivo.getNombreCompleto());
+            movimiento.setSocioId(socioActivo.getId());
             movimiento.setDetalle("Pago de cuota");
             movimiento.setFormaPago(dto.getFormaPago()); // EFECTIVO / TRANSFERENCIA
             movimiento.setMonto(dto.getMonto());
             movimiento.setTipoMovimiento(TipoMovimiento.CUOTA);
 
-            cajaService.guardar(movimiento, dto.getFechaAlta());
+            cajaService.guardar(movimiento);
 
+            sessionStatus.setComplete();
             redirectAttributes.addFlashAttribute("mensaje", "Cuota abonada con éxito.");
 
             // Justo antes del return final, generamos la URL
@@ -263,12 +268,13 @@ public class SocioController {
         MovimientoCaja movimiento = new MovimientoCaja();
         movimiento.setActividad(actividad.getNombre());
         movimiento.setSocioNombreCompleto(socio.getNombreCompleto());
+        movimiento.setSocioId(socio.getId());
         movimiento.setDetalle("Pago de inscripción");
         movimiento.setFormaPago(dto.getFormaPago());
         movimiento.setMonto(dto.getMonto());
         movimiento.setTipoMovimiento(TipoMovimiento.INSCRIPCION);
 
-        cajaService.guardar(movimiento, dto.getFechaAlta());
+        cajaService.guardar(movimiento);
 
         sessionStatus.setComplete();
         redirectAttributes.addFlashAttribute("mensaje", "Socio registrado con éxito!");
@@ -292,8 +298,8 @@ public class SocioController {
         model.addAttribute("socioRegistro", dto);
         model.addAttribute("titulo", "Abonar Cuota");
         model.addAttribute("socio", socio);
-        model.addAttribute("fechaInicio", LocalDateTime.now());
-        model.addAttribute("fechaVencimiento", (LocalDate.now()).plusMonths(1));
+        model.addAttribute("fechaInicio", LocalDateTime.now(ZONA_BUENOS_AIRES));
+        model.addAttribute("fechaVencimiento", LocalDate.now(ZONA_BUENOS_AIRES).plusMonths(1));
 
         return "socios/socios-form-2.html";
     }

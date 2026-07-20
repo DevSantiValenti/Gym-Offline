@@ -24,6 +24,8 @@ public class MovimientoCaja {
 
     private String socioNombreCompleto;
 
+    private Long socioId;
+
     private String detalle; // Pago de cuota / Inscripción
 
     private LocalDateTime fechaHora;

@@ -2,6 +2,7 @@ package com.analistas.gym.model.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +16,9 @@ import com.analistas.gym.model.repository.MovimientoCajaRepository;
 
 @Service
 public class MovimientoCajaService {
+
+    private static final ZoneId ZONA_BUENOS_AIRES = ZoneId.of("America/Argentina/Buenos_Aires");
+    private static final int MINUTOS_ANTIDUPLICADO = 5;
 
     @Autowired
     private MovimientoCajaRepository repository;
@@ -76,17 +80,35 @@ public class MovimientoCajaService {
     }
 
     public void guardar(MovimientoCaja movimiento) {
-        movimiento.setFechaHora(LocalDateTime.now());
+        LocalDateTime ahora = LocalDateTime.now(ZONA_BUENOS_AIRES);
+
+        if (esMovimientoDuplicadoReciente(movimiento, ahora)) {
+            return;
+        }
+
+        movimiento.setFechaHora(ahora);
         repository.save(movimiento);
     }
 
-    public void guardar(MovimientoCaja movimiento, LocalDate fecha) {
-        if (fecha != null) {
-            movimiento.setFechaHora(fecha.atStartOfDay());
-        } else {
-            movimiento.setFechaHora(LocalDateTime.now());
+    private boolean esMovimientoDuplicadoReciente(MovimientoCaja movimiento, LocalDateTime ahora) {
+        if (movimiento.getSocioId() == null
+                || movimiento.getTipoMovimiento() == null
+                || movimiento.getDetalle() == null
+                || movimiento.getMonto() == null) {
+            return false;
         }
-        repository.save(movimiento);
+
+        LocalDateTime desde = ahora.minusMinutes(MINUTOS_ANTIDUPLICADO);
+
+        return repository
+                .findFirstBySocioIdAndTipoMovimientoAndDetalleAndMontoAndFechaHoraBetweenOrderByFechaHoraDesc(
+                        movimiento.getSocioId(),
+                        movimiento.getTipoMovimiento(),
+                        movimiento.getDetalle(),
+                        movimiento.getMonto(),
+                        desde,
+                        ahora)
+                .isPresent();
     }
 
     public void eliminar(Long id) {
