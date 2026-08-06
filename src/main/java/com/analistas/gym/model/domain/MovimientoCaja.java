@@ -2,6 +2,7 @@ package com.analistas.gym.model.domain;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -29,6 +30,13 @@ public class MovimientoCaja {
     private String detalle; // Pago de cuota / Inscripción
 
     private LocalDateTime fechaHora;
+
+    private String usuarioCreador;
+
+    private String ipCreacion;
+
+    @Column(length = 512)
+    private String userAgentCreacion;
 
     private String formaPago; // EFECTIVO / TRANSFERENCIA
 

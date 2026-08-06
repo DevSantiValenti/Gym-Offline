@@ -103,6 +103,9 @@
         document.addEventListener("DOMContentLoaded", function () {
 
             const dniInput = document.getElementById("dni");
+            const form = document.querySelector("form");
+            const submitButton = form ? form.querySelector('button[type="submit"]') : null;
+            let formularioEnviado = false;
 
             let timeout = null;
 
@@ -152,9 +155,23 @@
 
             });
 
-            document.querySelector("form").addEventListener("submit", function (e) {
+            form.addEventListener("submit", function (e) {
                 if (dniInput.value === '') {
                     e.preventDefault();
+                    return;
+                }
+
+                if (formularioEnviado) {
+                    e.preventDefault();
+                    return;
+                }
+
+                formularioEnviado = true;
+
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    submitButton.dataset.textoOriginal = submitButton.textContent;
+                    submitButton.textContent = "PROCESANDO...";
                 }
             });
 

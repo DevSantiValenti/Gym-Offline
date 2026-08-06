@@ -3,6 +3,7 @@ package com.analistas.gym.web.controller;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.UUID;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import com.analistas.gym.model.service.MovimientoCajaService;
 import com.analistas.gym.model.service.WhatsAppService;
 
 import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -42,6 +44,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class SocioController {
 
     private static final ZoneId ZONA_BUENOS_AIRES = ZoneId.of("America/Argentina/Buenos_Aires");
+    private static final String TOKEN_PAGO_ATTR = "tokenPagoSocio";
+    private static final String TOKEN_PAGO_CREADO_ATTR = "tokenPagoSocioCreado";
+    private static final long MINUTOS_TOKEN_PAGO = 20;
 
     // @Autowired
     // ReciboPdfService reciboPdfService;
@@ -115,7 +120,7 @@ public class SocioController {
 
     // Paso 2: mostrar el formulario de membresía
     @GetMapping("/nuevo/final")
-    public String mostrarFormularioPaso2(Model model) {
+    public String mostrarFormularioPaso2(Model model, HttpSession session) {
         // El objeto "socioRegistro" ya está en sesión gracias a @SessionAttributes
         // Si por alguna razón no está, lo agregamos (aunque no debería pasar)
 
@@ -129,6 +134,7 @@ public class SocioController {
 
         model.addAttribute("fechaInicio", LocalDateTime.now(ZONA_BUENOS_AIRES));
         model.addAttribute("fechaVencimiento", LocalDate.now(ZONA_BUENOS_AIRES).plusMonths(1));
+        prepararTokenPago(model, session);
         return "socios/socios-form-2.html"; // ← nombre de tu segunda plantilla
     }
 
@@ -139,7 +145,16 @@ public class SocioController {
             BindingResult result,
             SessionStatus sessionStatus,
             RedirectAttributes redirectAttributes,
-            Model model) {
+            Model model,
+            @RequestParam("tokenPago") String tokenPago,
+            HttpSession session) {
+
+        if (!consumirTokenPagoValido(tokenPago, session)) {
+            sessionStatus.setComplete();
+            redirectAttributes.addFlashAttribute("error",
+                    "El formulario de pago estaba vencido o ya fue usado. Volvé a abrirlo antes de registrar la cuota.");
+            return "redirect:/home";
+        }
 
         // -------------------------------------------------------------
         // 1) Obtener actividad y monto REAL
@@ -284,7 +299,7 @@ public class SocioController {
 
     // Abonar cuota cuando esté vencida:
     @GetMapping("/abonarCuota/{id}")
-    public String editarEstadoCuota(@PathVariable Long id, Model model) {
+    public String editarEstadoCuota(@PathVariable Long id, Model model, HttpSession session) {
 
         Socio socio = socioService.buscarPorId(id);
 
@@ -300,8 +315,33 @@ public class SocioController {
         model.addAttribute("socio", socio);
         model.addAttribute("fechaInicio", LocalDateTime.now(ZONA_BUENOS_AIRES));
         model.addAttribute("fechaVencimiento", LocalDate.now(ZONA_BUENOS_AIRES).plusMonths(1));
+        prepararTokenPago(model, session);
 
         return "socios/socios-form-2.html";
+    }
+
+    private void prepararTokenPago(Model model, HttpSession session) {
+        String token = UUID.randomUUID().toString();
+        session.setAttribute(TOKEN_PAGO_ATTR, token);
+        session.setAttribute(TOKEN_PAGO_CREADO_ATTR, LocalDateTime.now(ZONA_BUENOS_AIRES));
+        model.addAttribute("tokenPago", token);
+    }
+
+    private boolean consumirTokenPagoValido(String tokenPago, HttpSession session) {
+        Object tokenGuardado = session.getAttribute(TOKEN_PAGO_ATTR);
+        Object creado = session.getAttribute(TOKEN_PAGO_CREADO_ATTR);
+
+        session.removeAttribute(TOKEN_PAGO_ATTR);
+        session.removeAttribute(TOKEN_PAGO_CREADO_ATTR);
+
+        if (!(tokenGuardado instanceof String tokenEsperado)
+                || !(creado instanceof LocalDateTime fechaCreacion)
+                || tokenPago == null
+                || !tokenEsperado.equals(tokenPago)) {
+            return false;
+        }
+
+        return fechaCreacion.plusMinutes(MINUTOS_TOKEN_PAGO).isAfter(LocalDateTime.now(ZONA_BUENOS_AIRES));
     }
 
     // Eliminar Socio

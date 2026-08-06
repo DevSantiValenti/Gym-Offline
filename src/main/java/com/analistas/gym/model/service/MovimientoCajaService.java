@@ -8,11 +8,17 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.analistas.gym.model.domain.MovimientoCaja;
 import com.analistas.gym.model.domain.TipoMovimiento;
 import com.analistas.gym.model.repository.MovimientoCajaRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class MovimientoCajaService {
@@ -79,7 +85,7 @@ public class MovimientoCajaService {
                 inicio, fin, tipo, formaPago);
     }
 
-    public void guardar(MovimientoCaja movimiento) {
+    public synchronized void guardar(MovimientoCaja movimiento) {
         LocalDateTime ahora = LocalDateTime.now(ZONA_BUENOS_AIRES);
 
         if (esMovimientoDuplicadoReciente(movimiento, ahora)) {
@@ -87,7 +93,40 @@ public class MovimientoCajaService {
         }
 
         movimiento.setFechaHora(ahora);
+        completarDatosDeAuditoria(movimiento);
         repository.save(movimiento);
+    }
+
+    private void completarDatosDeAuditoria(MovimientoCaja movimiento) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            movimiento.setUsuarioCreador(authentication.getName());
+        }
+
+        if (!(RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes attributes)) {
+            return;
+        }
+
+        HttpServletRequest request = attributes.getRequest();
+        movimiento.setIpCreacion(obtenerIpCliente(request));
+        movimiento.setUserAgentCreacion(recortar(request.getHeader("User-Agent"), 512));
+    }
+
+    private String obtenerIpCliente(HttpServletRequest request) {
+        String forwardedFor = request.getHeader("X-Forwarded-For");
+        if (forwardedFor != null && !forwardedFor.isBlank()) {
+            return forwardedFor.split(",")[0].trim();
+        }
+
+        return request.getRemoteAddr();
+    }
+
+    private String recortar(String valor, int maximo) {
+        if (valor == null || valor.length() <= maximo) {
+            return valor;
+        }
+
+        return valor.substring(0, maximo);
     }
 
     private boolean esMovimientoDuplicadoReciente(MovimientoCaja movimiento, LocalDateTime ahora) {

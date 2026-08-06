@@ -23,6 +23,7 @@
             <form th:action="@{/socios/guardar}" method="post" th:object="${socioRegistro}">
                 <input type="hidden" th:field="*{dni}">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <input type="hidden" name="tokenPago" th:value="${tokenPago}">
 
                 <!-- Fila 1: Tipo de membresía -->
                 <div class="form-row">
