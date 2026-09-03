@@ -18,15 +18,16 @@
     <!-- Esta va a ser la parte que se debe reeemplazar en las demas páginas, el contenido -->
     <div layout:fragment="contenido">
         <div class="form-container">
-            <h2>DETALLES DE MEMBRESÍA</h2>
+            <h2 th:text="${modo == 'editarCuota' ? 'EDITAR CUOTA' : 'DETALLES DE MEMBRESÍA'}">DETALLES DE MEMBRESÍA</h2>
 
-            <form th:action="@{/socios/guardar}" method="post" th:object="${socioRegistro}">
+            <form th:action="${modo == 'editarCuota'} ? @{/socios/editarCuota/{id}(id=${socio.id})} : @{/socios/guardar}"
+                method="post" th:object="${socioRegistro}">
                 <input type="hidden" th:field="*{dni}">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                <input type="hidden" name="tokenPago" th:value="${tokenPago}">
+                <input th:if="${modo != 'editarCuota'}" type="hidden" name="tokenPago" th:value="${tokenPago}">
 
                 <!-- Fila 1: Tipo de membresía -->
-                <div class="form-row">
+                <div class="form-row" th:if="${modo != 'editarCuota'}">
                     <div class="form-group">
                         <label for="actividad" class="required">Tipo de membresía</label>
                         <select id="actividad" required th:field="*{actividad}">
@@ -38,7 +39,7 @@
                 </div>
 
                 <!-- Fila 2: Monto y método de pago -->
-                <div class="form-row">
+                <div class="form-row" th:if="${modo != 'editarCuota'}">
                     <div class="form-group">
                         <label for="monto" class="required">
                             Monto mensual <span id="montoSpan"></span>
@@ -59,8 +60,12 @@
                 <!-- Fila 3: Fechas -->
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="fechaAlta" class="required">Fecha de inicio</label>
-                        <input type="date" id="fechaAlta" name="fechaAlta"
+                        <label for="fechaInicioCuota" class="required"
+                            th:text="${modo == 'editarCuota' ? 'Fecha de inicio de cuota' : 'Fecha de inicio'}">
+                            Fecha de inicio
+                        </label>
+                        <input type="date" id="fechaInicioCuota"
+                            th:name="${modo == 'editarCuota'} ? 'fechaInicioCuota' : 'fechaAlta'"
                             th:value="${#temporals.format(fechaInicio, 'yyyy-MM-dd')}" required>
                     </div>
                     <div class="form-group">
@@ -72,7 +77,7 @@
 
                 <!-- Botón -->
                 <button type="submit" class="btn-siguiente"
-                    th:text="${socio == null or socio.id == null ? 'REGISTRAR SOCIO' : 'REGISTRAR CUOTA'}">
+                    th:text="${modo == 'editarCuota' ? 'GUARDAR CUOTA' : (socio == null or socio.id == null ? 'REGISTRAR SOCIO' : 'REGISTRAR CUOTA')}">
                 </button>
 
             </form>

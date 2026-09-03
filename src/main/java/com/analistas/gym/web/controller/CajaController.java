@@ -111,6 +111,41 @@ public class CajaController {
         return redirectUrl.toString();
     }
 
+    @PostMapping("/modificar/{id}")
+    @Secured({ "ROLE_ADMIN" })
+    public String modificarMovimiento(
+            @PathVariable Long id,
+            @RequestParam String formaPago,
+            @RequestParam Integer monto,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta,
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) String filtroFormaPago) {
+
+        movimientoCajaService.modificarFormaPagoYMonto(id, formaPago, monto);
+
+        StringBuilder redirectUrl = new StringBuilder("redirect:/caja");
+        boolean tieneFiltros = false;
+
+        if (desde != null) {
+            redirectUrl.append(tieneFiltros ? "&" : "?").append("desde=").append(desde);
+            tieneFiltros = true;
+        }
+        if (hasta != null) {
+            redirectUrl.append(tieneFiltros ? "&" : "?").append("hasta=").append(hasta);
+            tieneFiltros = true;
+        }
+        if (tipo != null && !tipo.isBlank()) {
+            redirectUrl.append(tieneFiltros ? "&" : "?").append("tipo=").append(tipo);
+            tieneFiltros = true;
+        }
+        if (filtroFormaPago != null && !filtroFormaPago.isBlank()) {
+            redirectUrl.append(tieneFiltros ? "&" : "?").append("formaPago=").append(filtroFormaPago);
+        }
+
+        return redirectUrl.toString();
+    }
+
     @PostMapping("/pago-diario")
     public String registrarPagoDiario(
             @RequestParam String nombreCompleto,

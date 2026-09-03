@@ -65,7 +65,7 @@
                         <th>Usuario</th>
                         <th>Forma de pago</th>
                         <th>Monto</th>
-                        <th sec:authorize="${hasRole('ADMIN')}">Eliminar</th>
+                        <th sec:authorize="${hasRole('ADMIN')}">Acciones</th>
                     </tr>
                 </thead>
 
@@ -84,8 +84,13 @@
                         <td data-label="Monto" th:text="'$' + ${m.monto}"></td>
 
                         <td data-label="Acciones" class="acciones" sec:authorize="${hasRole('ADMIN')}">
+                            <button type="button" class="btn-accion btn-modificar" data-bs-toggle="modal"
+                                data-bs-target="#modalModificarMovimiento"
+                                th:attr="data-action=@{/caja/modificar/{id}(id=${m.id},desde=${desde},hasta=${hasta},tipo=${tipo},filtroFormaPago=${formaPago})},data-forma-pago=${m.formaPago},data-monto=${m.monto}">
+                                Modificar
+                            </button>
                             <a sec:authorize="${hasRole('ADMIN')}" href="#"
-                                class="eliminar text-danger p-2 bg-dark rounded-3"
+                                class="btn-accion btn-eliminar"
                                 th:onclick="|confirmarEliminacion('@{/caja/eliminar/{id}(id=${m.id},desde=${desde},hasta=${hasta},tipo=${tipo},formaPago=${formaPago})}')|">
                                 Eliminar
                             </a>
@@ -101,13 +106,62 @@
             <h3>TOTAL: $<span th:text="${totalFormateado}"></span></h3>
         </div>
 
+        <div class="modal fade" id="modalModificarMovimiento" tabindex="-1" aria-labelledby="modalModificarMovimientoLabel"
+            aria-hidden="true" sec:authorize="${hasRole('ADMIN')}">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content modal-caja">
+                    <form id="formModificarMovimiento" th:action="@{/caja/modificar/0}" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalModificarMovimientoLabel">Modificar movimiento</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                aria-label="Cerrar"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="modalFormaPago" class="form-label">Forma de pago</label>
+                                <select id="modalFormaPago" name="formaPago" class="form-select" required>
+                                    <option value="EFECTIVO">Efectivo</option>
+                                    <option value="TRANSFERENCIA">Transferencia</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="modalMonto" class="form-label">Monto</label>
+                                <input type="number" id="modalMonto" name="monto" class="form-control" min="1"
+                                    step="1" required>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn-caja-secundario" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn-caja-primario">Guardar cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- JS -->
-    <script th:fragment="js"></script>
-    <script>
+    <script th:fragment="js">
         $(document).ready(function () {
             $('#tablaCaja').DataTable();
+
+            const modalModificar = document.getElementById('modalModificarMovimiento');
+            const formModificar = document.getElementById('formModificarMovimiento');
+            const formaPagoInput = document.getElementById('modalFormaPago');
+            const montoInput = document.getElementById('modalMonto');
+
+            if (modalModificar && formModificar && formaPagoInput && montoInput) {
+                modalModificar.addEventListener('show.bs.modal', function (event) {
+                    const boton = event.relatedTarget;
+                    formModificar.action = boton.getAttribute('data-action');
+                    formaPagoInput.value = boton.getAttribute('data-forma-pago');
+                    montoInput.value = boton.getAttribute('data-monto');
+                });
+            }
         });
     </script>
 

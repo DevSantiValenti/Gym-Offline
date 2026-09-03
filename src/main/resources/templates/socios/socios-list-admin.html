@@ -64,19 +64,26 @@
                             </td>
 
                             <td data-label="Acciones" class="acciones">
-                                <a th:href="@{/socios/abonarCuota/{id}(id=${socio.id})}"
-                                    class="editar text-primary p-2 bg-dark rounded-3">Abonar</a>
+                                <div class="acciones-grid">
+                                    <a th:href="@{/socios/abonarCuota/{id}(id=${socio.id})}"
+                                        class="editar text-primary p-2 bg-dark rounded-3">Abonar</a>
 
-                                <a sec:authorize="${hasRole('ADMIN')}" href="#"
-                                    class="eliminar text-danger p-2 bg-dark rounded-3"
-                                    th:onclick="confirmarEliminacion('/socios/eliminar/' + [[${socio.id}]])">
-                                    Eliminar
-                                </a>
+                                    <a sec:authorize="${hasRole('ADMIN')}" href="#"
+                                        class="eliminar text-danger p-2 bg-dark rounded-3"
+                                        th:onclick="confirmarEliminacion('/socios/eliminar/' + [[${socio.id}]])">
+                                        Eliminar
+                                    </a>
 
-                                <a th:href="@{/socios/editar/{id}(id=${socio.id})}"
-                                    class="editar text-warning p-2 bg-dark rounded-3">
-                                    Editar
-                                </a>
+                                    <a th:href="@{/socios/editar/{id}(id=${socio.id})}"
+                                        class="editar text-warning p-2 bg-dark rounded-3">
+                                        Editar Socio
+                                    </a>
+
+                                    <a th:href="@{/socios/editarCuota/{id}(id=${socio.id})}"
+                                        class="editar-cuota text-info p-2 bg-dark rounded-3">
+                                        Editar Cuota
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     </tbody>

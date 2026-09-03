@@ -154,6 +154,15 @@ public class MovimientoCajaService {
         repository.deleteById(id);
     }
 
+    public void modificarFormaPagoYMonto(Long id, String formaPago, Integer monto) {
+        MovimientoCaja movimiento = repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Movimiento de caja no encontrado: " + id));
+
+        movimiento.setFormaPago(formaPago);
+        movimiento.setMonto(monto);
+        repository.save(movimiento);
+    }
+
     public Long calcularTotal(List<MovimientoCaja> movimientos) {
         return movimientos.stream()
                 .mapToLong(MovimientoCaja::getMonto)

@@ -5,11 +5,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const selectActividad = document.getElementById("actividad");
     const montoSpan = document.getElementById("montoSpan");
     const inputMonto = document.getElementById("monto");
-    const form = document.querySelector('form[action$="/socios/guardar"]');
+    const form = document.querySelector("form");
     const submitButton = form ? form.querySelector('button[type="submit"]') : null;
     let formularioEnviado = false;
 
     function actualizarMonto() {
+        if (!selectActividad || !montoSpan || !inputMonto) {
+            return;
+        }
+
         const option = selectActividad.options[selectActividad.selectedIndex];
         const monto = option.getAttribute("data-monto");
 
@@ -22,8 +26,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Ejecutar cuando cambie
-    selectActividad.addEventListener("change", actualizarMonto);
+    if (selectActividad) {
+        // Ejecutar cuando cambie
+        selectActividad.addEventListener("change", actualizarMonto);
+    }
 
     // Ejecutar al cargar la página
     actualizarMonto();

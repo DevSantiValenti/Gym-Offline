@@ -67,16 +67,90 @@ tr:hover {
     font-weight: bold;
 }
 
-.acciones button.eliminar {
-    background: none;
-    border: none;
-    color: #f44336;
-    font-weight: bold;
-    cursor: pointer;
+.acciones {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
-.acciones button.eliminar:hover {
-    text-decoration: underline;
+.btn-accion {
+    border: none;
+    color: #ffffff;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.btn-accion:hover {
+    color: #ffffff;
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.btn-modificar {
+    background: linear-gradient(135deg, #ff9900, #d47c00);
+    box-shadow: 0 0 8px rgba(255, 153, 0, 0.35);
+}
+
+.btn-modificar:hover {
+    box-shadow:
+        0 0 10px #ff9900,
+        0 0 18px rgba(255, 153, 0, 0.6);
+}
+
+.modal-caja {
+    background-color: #121212;
+    color: #ffffff;
+    border: 1px solid #333;
+    border-radius: 8px;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.75);
+}
+
+.modal-caja .modal-header,
+.modal-caja .modal-footer {
+    border-color: #333;
+}
+
+.modal-caja .modal-title,
+.modal-caja .form-label {
+    color: #ff9900;
+    font-weight: 700;
+}
+
+.btn-caja-primario,
+.btn-caja-secundario {
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 700;
+    transition: all 0.25s ease;
+}
+
+.btn-caja-primario {
+    background-color: #4CAF50;
+    color: #ffffff;
+}
+
+.btn-caja-primario:hover {
+    background-color: #45a049;
+}
+
+.btn-caja-secundario {
+    background-color: #2a2a2a;
+    color: #ffffff;
+}
+
+.btn-caja-secundario:hover {
+    background-color: #333;
 }
 
 .boton-nuevo {
@@ -237,7 +311,7 @@ tr:hover {
         justify-content: flex-end;
     }
 
-    .acciones a {
+    .acciones .btn-accion {
         width: 100%;
         text-align: center;
         font-size: 13px;

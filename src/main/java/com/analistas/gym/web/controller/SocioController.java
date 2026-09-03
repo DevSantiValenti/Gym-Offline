@@ -320,6 +320,57 @@ public class SocioController {
         return "socios/socios-form-2.html";
     }
 
+    @GetMapping("/editarCuota/{id}")
+    public String editarCuota(@PathVariable Long id, Model model) {
+
+        Socio socio = socioService.buscarPorId(id);
+
+        if (socio == null) {
+            return "redirect:/socios/listadoAdmin";
+        }
+
+        SocioRegistroDTO dto = new SocioRegistroDTO();
+        dto.setDni(socio.getDni());
+        dto.setFechaVencimiento(socio.getFechaVencimiento());
+
+        model.addAttribute("socioRegistro", dto);
+        model.addAttribute("socio", socio);
+        model.addAttribute("modo", "editarCuota");
+        model.addAttribute("titulo", "Editar Cuota");
+        model.addAttribute("fechaInicio", calcularInicioCuota(socio.getFechaVencimiento()));
+        model.addAttribute("fechaVencimiento", socio.getFechaVencimiento());
+
+        return "socios/socios-form-2.html";
+    }
+
+    @PostMapping("/editarCuota/{id}")
+    public String guardarEdicionCuota(
+            @PathVariable Long id,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaVencimiento,
+            RedirectAttributes redirectAttributes) {
+
+        Socio socio = socioService.buscarPorId(id);
+
+        if (socio == null) {
+            redirectAttributes.addFlashAttribute("error", "El socio no existe.");
+            return "redirect:/socios/listadoAdmin";
+        }
+
+        socio.setFechaVencimiento(fechaVencimiento);
+        socioService.guardar(socio);
+
+        redirectAttributes.addFlashAttribute("mensaje", "Fechas de cuota actualizadas correctamente.");
+        return "redirect:/socios/listadoAdmin";
+    }
+
+    private LocalDate calcularInicioCuota(LocalDate fechaVencimiento) {
+        if (fechaVencimiento == null) {
+            return LocalDate.now(ZONA_BUENOS_AIRES).minusMonths(1);
+        }
+
+        return fechaVencimiento.minusMonths(1);
+    }
+
     private void prepararTokenPago(Model model, HttpSession session) {
         String token = UUID.randomUUID().toString();
         session.setAttribute(TOKEN_PAGO_ATTR, token);
