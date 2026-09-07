@@ -47,6 +47,70 @@ td {
     border-bottom: 1px solid #333;
 }
 
+#sociosTable {
+    width: 100% !important;
+    table-layout: fixed;
+}
+
+#sociosTable_wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+#sociosTable th,
+#sociosTable td {
+    overflow-wrap: anywhere;
+    vertical-align: middle;
+}
+
+#sociosTable th:nth-child(1),
+#sociosTable td:nth-child(1) {
+    width: 4%;
+}
+
+#sociosTable th:nth-child(2),
+#sociosTable td:nth-child(2) {
+    width: 13%;
+}
+
+#sociosTable th:nth-child(3),
+#sociosTable td:nth-child(3) {
+    width: 8%;
+}
+
+#sociosTable th:nth-child(4),
+#sociosTable td:nth-child(4) {
+    width: 8%;
+}
+
+#sociosTable th:nth-child(5),
+#sociosTable td:nth-child(5) {
+    width: 10%;
+}
+
+#sociosTable th:nth-child(6),
+#sociosTable td:nth-child(6),
+#sociosTable th:nth-child(7),
+#sociosTable td:nth-child(7) {
+    width: 10%;
+}
+
+#sociosTable th:nth-child(8),
+#sociosTable td:nth-child(8) {
+    width: 6%;
+}
+
+#sociosTable th:nth-child(9),
+#sociosTable td:nth-child(9) {
+    width: 8%;
+}
+
+#sociosTable th:nth-child(10),
+#sociosTable td:nth-child(10) {
+    width: 23%;
+}
+
 tr:hover {
     background-color: #2a2a2a;
 }
@@ -210,6 +274,10 @@ tr:hover {
 /* Para el input de búsqueda dentro del label */
 .dataTables_wrapper .dataTables_filter input {
     width: 150px;
+}
+
+#sociosTable_wrapper .dataTables_filter input {
+    max-width: 100%;
 }
 
 /* Estilo para la barra de desplazamiento si aparece (opcional) */

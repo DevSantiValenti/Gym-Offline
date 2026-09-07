@@ -44,14 +44,13 @@ $(document).ready(() => {
     const isMobile = window.innerWidth <= 768;
 
     $("#sociosTable").DataTable({
-        responsive: {
+        responsive: isMobile ? false : {
             details: {
                 type: "inline",
                 target: "tr"
             }
         },
 
-        scrollX: true,
         autoWidth: false,
 
         order: [[0, "asc"]],
@@ -72,9 +71,9 @@ $(document).ready(() => {
             { searchable: false, orderable: false }  // Acciones
         ],
 
-        // 👉 Ocultar columnas SOLO en móvil
+        // Ocultar columnas secundarias solo en movil para que la tarjeta no quede larga.
         columnDefs: isMobile ? [
-            { targets: [3, 5, 6], visible: false } // DNI, Tel, Fechas
+            { targets: [3, 5, 6], visible: false } // Telefono, Fecha Alta, Vencimiento
         ] : [],
 
         language: {
