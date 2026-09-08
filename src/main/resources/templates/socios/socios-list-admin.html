@@ -38,55 +38,7 @@
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr th:each="socio, iterStat : ${socios}">
-                            <td data-label="ID" th:text="${iterStat.index + 1}"></td>
-                            <td data-label="Nombre" th:text="${socio.nombreCompleto}"></td>
-                            <td data-label="DNI" th:text="${socio.dni}"></td>
-                            <td data-label="Teléfono" th:text="${socio.telefono}"></td>
-                            <td data-label="Actividad"
-                                th:text="${socio.actividad != null ? socio.actividad.nombre : 'Sin actividad'}"></td>
-                            <td data-label="Fecha Alta" th:text="${#temporals.format(socio.fechaAlta, 'dd/MM/yyyy')}">
-                            </td>
-                            <td data-label="Vencimiento"
-                                th:text="${#temporals.format(socio.fechaVencimiento, 'dd/MM/yyyy')}"></td>
-
-                            <td data-label="Saldo"
-                                th:text="${socio.saldoPendiente != null ? ('$' + socio.saldoPendiente) : '-'}"
-                                th:class="${socio.saldoPendiente > 0 ? 'bg-danger fw-bold' : 'bg-success fw-bold'}">
-                            </td>
-
-                            <td data-label="Cuota">
-                                <span th:if="${socio.cuotaPaga != null}"
-                                    th:class="${socio.cuotaPaga} ? 'estado-pagado' : 'estado-pendiente'"
-                                    th:text="${socio.cuotaPaga} ? 'PAGADA' : 'PENDIENTE'"></span>
-                                <span th:if="${socio.cuotaPaga == null}">-</span>
-                            </td>
-
-                            <td data-label="Acciones" class="acciones">
-                                <div class="acciones-grid">
-                                    <a th:href="@{/socios/abonarCuota/{id}(id=${socio.id})}"
-                                        class="editar text-primary p-2 bg-dark rounded-3">Abonar</a>
-
-                                    <a sec:authorize="${hasRole('ADMIN')}" href="#"
-                                        class="eliminar text-danger p-2 bg-dark rounded-3"
-                                        th:onclick="confirmarEliminacion('/socios/eliminar/' + [[${socio.id}]])">
-                                        Eliminar
-                                    </a>
-
-                                    <a th:href="@{/socios/editar/{id}(id=${socio.id})}"
-                                        class="editar text-warning p-2 bg-dark rounded-3">
-                                        Editar Socio
-                                    </a>
-
-                                    <a th:href="@{/socios/editarCuota/{id}(id=${socio.id})}"
-                                        class="editar-cuota text-info p-2 bg-dark rounded-3">
-                                        Editar Cuota
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody></tbody>
 
                 </table>
             </div>

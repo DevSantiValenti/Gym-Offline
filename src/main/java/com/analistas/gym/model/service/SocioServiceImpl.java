@@ -10,6 +10,8 @@ import java.util.Locale;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,19 +85,33 @@ public class SocioServiceImpl implements ISocioService {
     @Transactional
     public List<Socio> listarSociosActualizados() {
 
-        List<Socio> socios = socioRepository.findByEliminadoFalse(); // ✅ SOLO ACTIVOS
+        actualizarCuotasVencidas();
+        return socioRepository.findByEliminadoFalse();
+    }
+
+    @Override
+    public Page<Socio> listarSociosActivosParaTabla(String busqueda, Pageable pageable) {
+        return socioRepository.buscarActivosParaListado(busqueda, pageable);
+    }
+
+    @Override
+    public long contarSociosActivos() {
+        return socioRepository.countByEliminadoFalse();
+    }
+
+    @Override
+    @Transactional
+    public void actualizarCuotasVencidas() {
         LocalDate hoy = LocalDate.now(ZONA_BUENOS_AIRES);
+        List<Socio> sociosVencidos = socioRepository.buscarActivosConCuotaVencidaParaActualizar(hoy);
 
-        for (Socio socio : socios) {
-            LocalDate fechaVto = socio.getFechaVencimiento();
-
-            if (fechaVto != null && !fechaVto.isAfter(hoy)) {
-                socio.setCuotaPaga(false);
-            }
+        for (Socio socio : sociosVencidos) {
+            socio.setCuotaPaga(false);
         }
 
-        socioRepository.saveAll(socios);
-        return socios;
+        if (!sociosVencidos.isEmpty()) {
+            socioRepository.saveAll(sociosVencidos);
+        }
     }
 
     @Override

@@ -3,12 +3,20 @@ package com.analistas.gym.web.controller;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,6 +55,7 @@ public class SocioController {
     private static final String TOKEN_PAGO_ATTR = "tokenPagoSocio";
     private static final String TOKEN_PAGO_CREADO_ATTR = "tokenPagoSocioCreado";
     private static final long MINUTOS_TOKEN_PAGO = 20;
+    private static final DateTimeFormatter FORMATO_FECHA_TABLA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     // @Autowired
     // ReciboPdfService reciboPdfService;
@@ -66,8 +75,116 @@ public class SocioController {
     @GetMapping("/listadoAdmin")
     public String listadoSocios(Model model) {
         model.addAttribute("titulo", "Listado de Socios");
-        model.addAttribute("socios", socioService.listarSociosActualizados());
+        socioService.actualizarCuotasVencidas();
         return "socios/socios-list-admin.html";
+    }
+
+    @GetMapping("/api/listado")
+    @ResponseBody
+    public Map<String, Object> listadoSociosDataTable(
+            @RequestParam(defaultValue = "0") Integer draw,
+            @RequestParam(defaultValue = "0") Integer start,
+            @RequestParam(defaultValue = "10") Integer length,
+            @RequestParam(name = "search[value]", required = false) String busqueda,
+            @RequestParam(name = "order[0][column]", defaultValue = "0") Integer columnaOrden,
+            @RequestParam(name = "order[0][dir]", defaultValue = "asc") String direccionOrden,
+            Authentication authentication) {
+
+        int cantidad = Math.max(1, Math.min(length, 100));
+        int inicio = Math.max(start, 0);
+        int pagina = inicio / cantidad;
+        Sort sort = Sort.by(obtenerDireccionOrden(direccionOrden), obtenerCampoOrden(columnaOrden));
+
+        Page<Socio> socios = socioService.listarSociosActivosParaTabla(
+                normalizarBusqueda(busqueda),
+                PageRequest.of(pagina, cantidad, sort));
+
+        boolean esAdmin = authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));
+
+        List<Map<String, Object>> datos = new ArrayList<>();
+        int numero = inicio + 1;
+
+        for (Socio socio : socios.getContent()) {
+            Map<String, Object> fila = new LinkedHashMap<>();
+            Integer saldoPendiente = socio.getSaldoPendiente();
+            Boolean cuotaPaga = socio.getCuotaPaga();
+
+            fila.put("numero", numero++);
+            fila.put("id", socio.getId());
+            fila.put("nombreCompleto", socio.getNombreCompleto());
+            fila.put("dni", socio.getDni());
+            fila.put("telefono", socio.getTelefono());
+            fila.put("actividad", socio.getActividad() != null ? socio.getActividad().getNombre() : "Sin actividad");
+            fila.put("fechaAlta", formatearFecha(socio.getFechaAlta()));
+            fila.put("fechaVencimiento", formatearFecha(socio.getFechaVencimiento()));
+            fila.put("saldo", saldoPendiente != null ? "$" + saldoPendiente : "-");
+            fila.put("saldoPendiente", saldoPendiente != null ? saldoPendiente : 0);
+            fila.put("cuotaTexto", cuotaPaga == null ? "-" : (cuotaPaga ? "PAGADA" : "PENDIENTE"));
+            fila.put("cuotaPaga", cuotaPaga);
+            fila.put("acciones", construirAccionesSocio(socio.getId(), esAdmin));
+            datos.add(fila);
+        }
+
+        Map<String, Object> respuesta = new LinkedHashMap<>();
+        respuesta.put("draw", draw);
+        respuesta.put("recordsTotal", socioService.contarSociosActivos());
+        respuesta.put("recordsFiltered", socios.getTotalElements());
+        respuesta.put("data", datos);
+        return respuesta;
+    }
+
+    private String normalizarBusqueda(String busqueda) {
+        return busqueda != null ? busqueda.trim() : "";
+    }
+
+    private Sort.Direction obtenerDireccionOrden(String direccionOrden) {
+        return "desc".equalsIgnoreCase(direccionOrden) ? Sort.Direction.DESC : Sort.Direction.ASC;
+    }
+
+    private String obtenerCampoOrden(Integer columnaOrden) {
+        if (columnaOrden == null) {
+            return "id";
+        }
+
+        return switch (columnaOrden) {
+            case 1 -> "nombreCompleto";
+            case 2 -> "dni";
+            case 3 -> "telefono";
+            case 4 -> "actividad.nombre";
+            case 5 -> "fechaAlta";
+            case 6 -> "fechaVencimiento";
+            case 7 -> "saldoPendiente";
+            case 8 -> "cuotaPaga";
+            default -> "id";
+        };
+    }
+
+    private String formatearFecha(LocalDate fecha) {
+        return fecha != null ? fecha.format(FORMATO_FECHA_TABLA) : "-";
+    }
+
+    private String construirAccionesSocio(Long socioId, boolean esAdmin) {
+        StringBuilder acciones = new StringBuilder("<div class=\"acciones-grid\">");
+        acciones.append("<a href=\"/socios/abonarCuota/")
+                .append(socioId)
+                .append("\" class=\"editar text-primary p-2 bg-dark rounded-3\">Abonar</a>");
+
+        if (esAdmin) {
+            acciones.append("<a href=\"#\" class=\"eliminar text-danger p-2 bg-dark rounded-3\" onclick=\"confirmarEliminacion('/socios/eliminar/")
+                    .append(socioId)
+                    .append("')\">Eliminar</a>");
+        }
+
+        acciones.append("<a href=\"/socios/editar/")
+                .append(socioId)
+                .append("\" class=\"editar text-warning p-2 bg-dark rounded-3\">Editar Socio</a>");
+        acciones.append("<a href=\"/socios/editarCuota/")
+                .append(socioId)
+                .append("\" class=\"editar-cuota text-info p-2 bg-dark rounded-3\">Editar Cuota</a>");
+        acciones.append("</div>");
+
+        return acciones.toString();
     }
 
     // Este método se ejecuta automáticamente antes de cualquier handler

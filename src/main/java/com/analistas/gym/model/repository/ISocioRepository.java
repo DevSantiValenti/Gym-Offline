@@ -1,6 +1,8 @@
 package com.analistas.gym.model.repository;
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
@@ -29,6 +31,28 @@ public interface ISocioRepository extends CrudRepository<Socio, Long> {
     List<Socio> findByEliminadoTrueAndFechaEliminacionBetween(
             LocalDateTime desde,
             LocalDateTime hasta);
+
+    long countByEliminadoFalse();
+
+    @Query("""
+            SELECT s FROM Socio s
+            LEFT JOIN s.actividad a
+            WHERE s.eliminado = false
+            AND (:busqueda IS NULL OR :busqueda = ''
+                OR LOWER(s.nombreCompleto) LIKE LOWER(CONCAT('%', :busqueda, '%'))
+                OR LOWER(s.dni) LIKE LOWER(CONCAT('%', :busqueda, '%'))
+                OR LOWER(COALESCE(s.telefono, '')) LIKE LOWER(CONCAT('%', :busqueda, '%'))
+                OR LOWER(COALESCE(a.nombre, '')) LIKE LOWER(CONCAT('%', :busqueda, '%')))
+            """)
+    Page<Socio> buscarActivosParaListado(@Param("busqueda") String busqueda, Pageable pageable);
+
+    @Query("""
+            SELECT s FROM Socio s
+            WHERE s.eliminado = false
+            AND s.fechaVencimiento <= :hoy
+            AND (s.cuotaPaga IS NULL OR s.cuotaPaga = true)
+            """)
+    List<Socio> buscarActivosConCuotaVencidaParaActualizar(@Param("hoy") LocalDate hoy);
 
     @Query("SELECT s FROM Socio s WHERE DATE(s.ultIngreso) = :fecha AND s.eliminado = false ORDER BY s.ultIngreso DESC")
     List<Socio> findByFechaIngreso(@Param("fecha") LocalDate fecha);
