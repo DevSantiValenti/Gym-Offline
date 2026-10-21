@@ -143,7 +143,8 @@ tr:hover {
     gap: 8px;
 }
 
-.acciones a {
+.acciones a,
+.acciones button {
     width: 100%;
     min-width: 0;
     min-height: 34px;
@@ -161,9 +162,12 @@ tr:hover {
     font-weight: 700;
     font-size: 12px;
     white-space: nowrap;
+    cursor: pointer;
+    font-family: inherit;
 }
 
-.acciones a:hover {
+.acciones a:hover,
+.acciones button:hover {
     background-color: #2a3038 !important;
     text-decoration: none;
 }
@@ -182,6 +186,72 @@ tr:hover {
 
 .acciones a.editar-cuota {
     color: #00cfff !important;
+}
+
+.acciones button.abonar-deuda {
+    color: #00ff9c !important;
+    border: none;
+}
+
+.modal-deuda {
+    background-color: #121212;
+    color: #ffffff;
+    border: 1px solid #333;
+    border-radius: 8px;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.75);
+}
+
+.modal-deuda .modal-header,
+.modal-deuda .modal-footer {
+    border-color: #333;
+}
+
+.modal-deuda .modal-title,
+.modal-deuda .form-label {
+    color: #ff9900;
+    font-weight: 700;
+}
+
+.modal-deuda .form-control,
+.modal-deuda .form-select {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border: 1px solid #555;
+}
+
+.modal-deuda .form-control:focus,
+.modal-deuda .form-select:focus {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border-color: #ff9900;
+    box-shadow: none;
+}
+
+.deuda-faltante {
+    margin-bottom: 20px;
+    padding: 12px 14px;
+    background-color: #2e7d32;
+    border-radius: 6px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.btn-deuda-primario,
+.btn-deuda-secundario {
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 700;
+}
+
+.btn-deuda-primario {
+    background-color: #4caf50;
+    color: #ffffff;
+}
+
+.btn-deuda-secundario {
+    background-color: #2a2a2a;
+    color: #ffffff;
 }
 
 .boton-nuevo {
@@ -373,7 +443,8 @@ tr:hover {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .acciones a {
+    .acciones a,
+    .acciones button {
         width: 100%;
         min-width: 0;
         min-height: 36px;

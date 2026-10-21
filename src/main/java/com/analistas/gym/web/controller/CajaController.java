@@ -120,9 +120,14 @@ public class CajaController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta,
             @RequestParam(required = false) String tipo,
-            @RequestParam(required = false) String filtroFormaPago) {
+            @RequestParam(required = false) String filtroFormaPago,
+            RedirectAttributes redirectAttributes) {
 
-        movimientoCajaService.modificarFormaPagoYMonto(id, formaPago, monto);
+        try {
+            movimientoCajaService.modificarFormaPagoYMonto(id, formaPago, monto);
+        } catch (IllegalArgumentException exception) {
+            redirectAttributes.addFlashAttribute("error", exception.getMessage());
+        }
 
         StringBuilder redirectUrl = new StringBuilder("redirect:/caja");
         boolean tieneFiltros = false;

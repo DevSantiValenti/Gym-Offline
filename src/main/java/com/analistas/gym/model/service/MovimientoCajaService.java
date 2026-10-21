@@ -11,12 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.analistas.gym.model.domain.MovimientoCaja;
+import com.analistas.gym.model.domain.Socio;
 import com.analistas.gym.model.domain.TipoMovimiento;
 import com.analistas.gym.model.repository.MovimientoCajaRepository;
+import com.analistas.gym.model.repository.ISocioRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -28,6 +31,9 @@ public class MovimientoCajaService {
 
     @Autowired
     private MovimientoCajaRepository repository;
+
+    @Autowired
+    private ISocioRepository socioRepository;
 
     // MÉTODO AGREGADO PARA QUE EL CONTROLADOR LO PUEDA USAR
     public List<MovimientoCaja> findByFechaHoraBetween(LocalDateTime inicio, LocalDateTime fin) {
@@ -154,13 +160,39 @@ public class MovimientoCajaService {
         repository.deleteById(id);
     }
 
+    @Transactional
     public void modificarFormaPagoYMonto(Long id, String formaPago, Integer monto) {
         MovimientoCaja movimiento = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Movimiento de caja no encontrado: " + id));
 
+        if (movimiento.getTipoMovimiento() == TipoMovimiento.DEUDA_CUOTA) {
+            ajustarSaldoPorModificacionDeuda(movimiento, monto);
+        }
+
         movimiento.setFormaPago(formaPago);
         movimiento.setMonto(monto);
         repository.save(movimiento);
+    }
+
+    private void ajustarSaldoPorModificacionDeuda(MovimientoCaja movimiento, Integer nuevoMonto) {
+        if (movimiento.getSocioId() == null || movimiento.getMonto() == null || nuevoMonto == null
+                || nuevoMonto <= 0) {
+            throw new IllegalArgumentException("El movimiento de deuda no tiene datos válidos.");
+        }
+
+        Socio socio = socioRepository.findById(movimiento.getSocioId())
+                .orElseThrow(() -> new IllegalArgumentException("El socio asociado al movimiento no existe."));
+
+        int saldoActual = socio.getSaldoPendiente() != null ? socio.getSaldoPendiente() : 0;
+        int saldoLuegoDeModificar = saldoActual + movimiento.getMonto() - nuevoMonto;
+
+        if (saldoLuegoDeModificar < 0) {
+            throw new IllegalArgumentException(
+                    "El nuevo monto no puede superar el saldo disponible de la deuda del socio.");
+        }
+
+        socio.setSaldoPendiente(saldoLuegoDeModificar);
+        socioRepository.save(socio);
     }
 
     public Long calcularTotal(List<MovimientoCaja> movimientos) {

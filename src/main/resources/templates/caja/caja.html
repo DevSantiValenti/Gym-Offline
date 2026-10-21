@@ -30,6 +30,7 @@
                 <select name="tipo" class="form-select">
                     <option value="" th:selected="${tipo == null || tipo.isBlank()}">Todos</option>
                     <option value="CUOTA" th:selected="${tipo == 'CUOTA'}">Pago de cuota</option>
+                    <option value="DEUDA_CUOTA" th:selected="${tipo == 'DEUDA_CUOTA'}">Pago de deuda de cuota</option>
                     <option value="INSCRIPCION" th:selected="${tipo == 'INSCRIPCION'}">Pago de inscripción</option>
                     <option value="DIARIO" th:selected="${tipo == 'DIARIO'}">Pago diario</option>
                 </select>

@@ -113,4 +113,58 @@ $(document).ready(() => {
             }
         }
     });
+
+    const modalAbonarDeuda = document.getElementById("modalAbonarDeuda");
+    const formAbonarDeuda = document.getElementById("formAbonarDeuda");
+    const deudaPendiente = document.getElementById("deudaPendiente");
+    const montoAbonoDeuda = document.getElementById("montoAbonoDeuda");
+    const guardarAbonoDeuda = formAbonarDeuda?.querySelector('button[type="submit"]');
+    let abonoEnviado = false;
+
+    if (modalAbonarDeuda && formAbonarDeuda && deudaPendiente && montoAbonoDeuda && guardarAbonoDeuda) {
+        modalAbonarDeuda.addEventListener("show.bs.modal", function (event) {
+            const boton = event.relatedTarget;
+            const socioId = boton?.getAttribute("data-socio-id");
+            const saldo = Number(boton?.getAttribute("data-saldo-pendiente"));
+
+            if (!socioId || !Number.isInteger(saldo) || saldo <= 0) {
+                return;
+            }
+
+            formAbonarDeuda.action = `/socios/abonarDeuda/${encodeURIComponent(socioId)}`;
+            deudaPendiente.textContent = `$${saldo.toLocaleString("es-AR")}`;
+            montoAbonoDeuda.max = String(saldo);
+            montoAbonoDeuda.value = "";
+            montoAbonoDeuda.setCustomValidity("");
+        });
+
+        montoAbonoDeuda.addEventListener("input", function () {
+            const monto = Number(montoAbonoDeuda.value);
+            const faltante = Number(montoAbonoDeuda.max);
+            const invalido = !Number.isInteger(monto) || monto <= 0 || monto > faltante;
+
+            montoAbonoDeuda.setCustomValidity(
+                invalido ? "El monto debe ser mayor a cero y no superar el faltante." : ""
+            );
+        });
+
+        formAbonarDeuda.addEventListener("submit", function (event) {
+            if (abonoEnviado) {
+                event.preventDefault();
+                return;
+            }
+
+            abonoEnviado = true;
+            guardarAbonoDeuda.disabled = true;
+            guardarAbonoDeuda.textContent = "Guardando...";
+        });
+
+        modalAbonarDeuda.addEventListener("hidden.bs.modal", function () {
+            formAbonarDeuda.reset();
+            montoAbonoDeuda.setCustomValidity("");
+            abonoEnviado = false;
+            guardarAbonoDeuda.disabled = false;
+            guardarAbonoDeuda.textContent = "Guardar abono";
+        });
+    }
 });

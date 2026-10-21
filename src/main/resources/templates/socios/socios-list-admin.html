@@ -42,6 +42,47 @@
 
                 </table>
             </div>
+
+            <div class="modal fade" id="modalAbonarDeuda" tabindex="-1" aria-labelledby="modalAbonarDeudaLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content modal-deuda">
+                        <form id="formAbonarDeuda" th:action="@{/socios/abonarDeuda/0}" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalAbonarDeudaLabel">Abonar deuda de cuota</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                    aria-label="Cerrar"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <div class="deuda-faltante">
+                                    Faltante: <strong id="deudaPendiente">$0</strong>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="montoAbonoDeuda" class="form-label">Monto a abonar</label>
+                                    <input type="number" id="montoAbonoDeuda" name="monto" class="form-control"
+                                        min="1" step="1" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="formaPagoAbonoDeuda" class="form-label">Forma de pago</label>
+                                    <select id="formaPagoAbonoDeuda" name="formaPago" class="form-select" required>
+                                        <option value="EFECTIVO">Efectivo</option>
+                                        <option value="TRANSFERENCIA">Transferencia</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn-deuda-secundario" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn-deuda-primario">Guardar abono</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

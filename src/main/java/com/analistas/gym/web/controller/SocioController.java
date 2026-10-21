@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -122,7 +123,7 @@ public class SocioController {
             fila.put("saldoPendiente", saldoPendiente != null ? saldoPendiente : 0);
             fila.put("cuotaTexto", cuotaPaga == null ? "-" : (cuotaPaga ? "PAGADA" : "PENDIENTE"));
             fila.put("cuotaPaga", cuotaPaga);
-            fila.put("acciones", construirAccionesSocio(socio.getId(), esAdmin));
+            fila.put("acciones", construirAccionesSocio(socio.getId(), esAdmin, saldoPendiente));
             datos.add(fila);
         }
 
@@ -164,11 +165,19 @@ public class SocioController {
         return fecha != null ? fecha.format(FORMATO_FECHA_TABLA) : "-";
     }
 
-    private String construirAccionesSocio(Long socioId, boolean esAdmin) {
+    private String construirAccionesSocio(Long socioId, boolean esAdmin, Integer saldoPendiente) {
         StringBuilder acciones = new StringBuilder("<div class=\"acciones-grid\">");
         acciones.append("<a href=\"/socios/abonarCuota/")
                 .append(socioId)
                 .append("\" class=\"editar text-primary p-2 bg-dark rounded-3\">Abonar</a>");
+
+        if (saldoPendiente != null && saldoPendiente > 0) {
+            acciones.append("<button type=\"button\" class=\"abonar-deuda p-2 bg-dark rounded-3\" ")
+                    .append("data-bs-toggle=\"modal\" data-bs-target=\"#modalAbonarDeuda\" ")
+                    .append("data-socio-id=\"").append(socioId).append("\" ")
+                    .append("data-saldo-pendiente=\"").append(saldoPendiente).append("\">")
+                    .append("Abonar deuda</button>");
+        }
 
         if (esAdmin) {
             acciones.append("<a href=\"#\" class=\"eliminar text-danger p-2 bg-dark rounded-3\" onclick=\"confirmarEliminacion('/socios/eliminar/")
@@ -435,6 +444,55 @@ public class SocioController {
         prepararTokenPago(model, session);
 
         return "socios/socios-form-2.html";
+    }
+
+    @PostMapping("/abonarDeuda/{id}")
+    @Transactional
+    public String abonarDeuda(
+            @PathVariable Long id,
+            @RequestParam Integer monto,
+            @RequestParam String formaPago,
+            RedirectAttributes redirectAttributes) {
+
+        Socio socio = socioService.buscarPorId(id);
+
+        if (socio == null) {
+            redirectAttributes.addFlashAttribute("error", "El socio no existe.");
+            return "redirect:/socios/listadoAdmin";
+        }
+
+        int saldoPendiente = socio.getSaldoPendiente() != null ? socio.getSaldoPendiente() : 0;
+        if (saldoPendiente <= 0) {
+            redirectAttributes.addFlashAttribute("error", "El socio no tiene una deuda pendiente.");
+            return "redirect:/socios/listadoAdmin";
+        }
+
+        if (monto == null || monto <= 0 || monto > saldoPendiente) {
+            redirectAttributes.addFlashAttribute("error",
+                    "El monto debe ser mayor a cero y no superar el faltante de la cuota.");
+            return "redirect:/socios/listadoAdmin";
+        }
+
+        if (!"EFECTIVO".equals(formaPago) && !"TRANSFERENCIA".equals(formaPago)) {
+            redirectAttributes.addFlashAttribute("error", "La forma de pago no es válida.");
+            return "redirect:/socios/listadoAdmin";
+        }
+
+        socio.setSaldoPendiente(saldoPendiente - monto);
+        socioService.guardar(socio);
+
+        MovimientoCaja movimiento = new MovimientoCaja();
+        movimiento.setActividad(socio.getActividad() != null ? socio.getActividad().getNombre() : "Sin actividad");
+        movimiento.setSocioNombreCompleto(socio.getNombreCompleto());
+        movimiento.setSocioId(socio.getId());
+        movimiento.setDetalle("Pago de deuda de cuota");
+        movimiento.setFormaPago(formaPago);
+        movimiento.setMonto(monto);
+        movimiento.setTipoMovimiento(TipoMovimiento.DEUDA_CUOTA);
+        cajaService.guardar(movimiento);
+
+        redirectAttributes.addFlashAttribute("mensaje", "Abono de deuda registrado con éxito.");
+        return "redirect:/socios/listadoAdmin";
     }
 
     @GetMapping("/editarCuota/{id}")
